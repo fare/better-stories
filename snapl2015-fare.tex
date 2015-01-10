@@ -13,11 +13,11 @@
 
 % Author macros::begin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{Better Stories, Better Languages}
-\titlerunning{What Would Alyssa P. Hacker Do?} %optional, in case that the title is too long; the running title should fit into the top page column
+\titlerunning{Better Stories, Better Languages (What Would Alyssa P. Hacker Do?)} %optional, in case that the title is too long; the running title should fit into the top page column
 
-\author[1]{François-René Rideau}
+\author{François-René Rideau}
 %\author[2]{Joan R. Access}
-\affil[1]{TUNES Project\\
+\affil{TUNES Project\\
   %New York, USA\\
   \texttt{fare@tunes.org}}
 %\affil[2]{Department of Informatics, Dummy College\\
@@ -55,106 +55,115 @@
 \newcommand{\SadBetter}[3]{\subsection{#1} \par #2 \par #3 \par}
 \newcommand{\SadBetterEvenBetter}[4]{\subsection{#1} \par #2 \par #3 \par #4 \par}
 
-
 \maketitle
 
 \begin{abstract}
   Software tools imply a story.
   New stories can help invent new tools.
   Explicit stories are a great meta-tool...
-  and thus provide a fresh view on programming language design.
+  and provide a systematic way to improve
+  the design of programming language design.
 \end{abstract}
 
 \section{Introduction}
 
 Stories are the best way that humans communicate understanding.
 Maybe it's something hardwired in the structure of our brains;
-or maybe it's related to communication happening through a bottleneck
-of a sequential signal stream, to be output into a coherent stream,
-then processed back into a coherent view.
-And not all stories are equivalent; for stories have consequences,
+maybe it's related to communication happening
+through the bottleneck of a sequential signal stream,
+to be output as a coherent whole,
+then coherently processed back into understanding.
+Now not all stories are equivalent; for stories have consequences,
 and depending on which stories they internalize,
 people may behave quite differently, with very different outcomes.
+To freely translate Confucius \cite{Analects},
+``when concepts are unfit, plans are unadapted and actions are unsuccessful''.
 Therefore, whichever topic we're interested in,
 it's important to frame the topic in term of better stories rather than worse ones.
 
-Programming languages are themselves framework for telling stories;
-except that, as Henry Baker once remarked, ``Computer language is inherently a pun –
-[it] needs to be interpreted by both men \& machines'' \cite{HBaker2005}
-they are to be told, received, modified and retold by both humans and machines,
-in at least two very different sets of contexts.
-We contend that the stories commonly told about programming languages can be improved upon;
+Programming languages are themselves frameworks for telling stories,
+except that, as Henry Baker once remarked \cite{HBaker2005}:
+``Computer language is inherently a pun – [it] needs to be interpreted by both men \& machines''
+We contend that the stories commonly told \emph{about} programming languages can be improved upon;
 and that this improvement, while it might not yield any new feature at some lower level,
-can yield completely different programming languages and programs at another level.
+can yield completely different programming environments and programs at a higher level.
 
-Our approach will be reminiscent of cybernetics:
-looking at the big picture of the interactions within the system
-(in this case, one that involves both men and machines),
-their feedback forces that when negative imply
-stable convergence towards an equilibrium with strong invariants,
-and when positive imply runaway evolution towards ever more elaborate patterns
-with strong variants.
-
-This essay, based on a 2009 talk given to the Bay Area Lispers
+This essay, based on a 2009 talk given to the Bay Area Lispers,
 will present a set of stories, some familiar, some less familiar;
 they will be presented in pairs (or sometimes triples)
 where a sad story is followed by a happier story that improves upon it.
 Hopefully, one does not have to be convinced by each and every story improvement
 to get a gist of the overarching meta-story being told.
 
-Let's start with easy ones that have a large consensus...
+Our suggested improvements will be inspired by cybernetics:
+a look at the big picture of interactions within a system
+(in this case, the software development ecosystem, that involves both men and machines),
+that tries to identify on the one hand what are the invariants
+(conserved quantities such as energy, information,
+amount of programmer effort, etc.),
+the monotonically increasing variants
+(distance to goal, entropy, etc.),
+and the feedback forces that when negative imply
+stable convergence towards an equilibrium
+and when positive imply runaway evolution
+towards ever more elaborate patterns.
+
+Let's start with easy story improvements that have a large consensus,
+then focus on programming languages as ways to specify semantics,
+then on non-functional properties of programming environments,
+before we conclude with a meta-story about the previous story improvements.
 
 \section{Easy Software Stories}
 
 \SadBetter{Funding}{
 If you ask ``how to fund software?''
-then your concern is that {Software costs money to produce}.
+then your concern is that Software costs money to produce.
 The underlying story is that \emph{software} is owned and sold,
-which implies human relationships of vendors and customers,
-and as a result proprietary software distributed as closed binaries,
+which implies human relationships of vendors and customers.
+The result is proprietary software distributed as closed binaries,
 unmaintainable by anyone but the vendor
 (who may or may not be interested in maintenance or competent at it).
 }{
-If instead you ask ``How to fund programming?''
-then your concern is that {Starved programmers don't code}.
+If instead you ask ``how to fund programming?''
+then your concern is that starved programmers don't code.
 The underlying story is that \emph{labor} is owned and sold,
-which implies human relationships of contributors and users,
-and as a result Free Software distributed as Open Source,
+which implies human relationships of contributors and users.
+The result is Free Software distributed as Open Source,
 shaped into maintainability by anyone and everyone who is both interested in it and competent at it
-(quite possibly hired by users).
+(quite possibly hired by users who care).
 }
-The shift between the two stories is quite familiar, and most people will agree that
-the first story is a comparatively sad story, and the second story is a happier one;
-and though not everyone agrees that the second story should wholly displace the first,
+The shift between the two stories is quite familiar, and many people will agree that
+the first story is a comparatively sad story, and the second story is a happier one.
+Though not everyone agrees that the second story should wholly displace the first,
 at least most everyone agrees that its existence, and its being made explicit,
-was an improvement over its absence, and enabled the writing of great software
-that would have been very hard or impossible before.
+was an improvement over its absence, and enabled the collaborative writing of great software
+that would have been very hard or impossible to achieve before.
 
 \SadBetter{Factorisation}{
 The question ``how to decompose programs?''
 addresses the concern that
-most software doesn't fit in one brainful;
-its underlying story is that
+most software doesn't fit in one brainful.
+Its underlying story is that
 software must follow a hierarchical design into components,
-by fully informed by some central designer;
-the result is top-down management, with UML diagrams and a waterfall process.
+fully informed by some central designer.
+The result is top-down management, the waterfall process, and UML diagrams.
 That's a sad story.
 }{
 The question ``how to decompose programming?''
 addresses the concern that
-many programmers must cooperate;
-its underlying story is that
-software development is done by many partially informed programmers who must cooperate;
-the result is the growth of networks of programmers,
+many programmers must cooperate.
+Its underlying story is that
+software development is done by many partially informed programmers who must cooperate.
+The result is the growth of networks of programmers,
 organized around software packages grouped into software distributions.
 This better story scales to larger, more elaborate software.
 }
 
 \SadBetter{Quality}{
-The question ``How to achieve great software?''
-addresses how software is hard to design;
-its underlying story is that
-each component will be designed by the best possible experts,
+The question ``how to achieve great software?''
+addresses the difficulty of producing quality software.
+Its underlying story is that
+each component should be designed by the best possible experts,
 from whom the information will flow to less expert developers;
 in each specific topic, the less expert people are excluded from making decisions.
 Development will be divided into teams be segregated by expertise,
@@ -162,65 +171,69 @@ each following the best standards defined for the field.
 That's a sad story that leads to the worst repetitions of Conway's Law,
 and people who can't communicate with each other by lack of a common language.
 }{
-Ask instead ``How to foster better programming?''
+Ask instead ``how to foster better programming?''
 to address how to do our best and compete with others,
-learning from our and their successes and failures;
-the story is that you gain experience through experiments,
+learning from our and their successes and failures.
+The story is that you gain experience through experiments,
 with experience as an output, rather than expertise as an input.
-The happier result is to cultivate good incentives, where information isn't the limiting factor,
+The happier result is to cultivate good incentives,
+where information isn't the limiting factor,
 and instead developers sell services on an open market
-that value both their experience and ability to learn new tricks in communities.
+that value both their experience and ability to learn new skills, in communities.
 }
 
 \section{Programming Languages}
 
 \SadBetter{Features}{
 Ask ``how to choose features in a \proglang{}?''
-to address access all features of the machine;
-you assume that \proglangs{} are for machines;
-the sad result is a Turing tar pit that matches language features with machine features.
+to address access to all features of the machine.
+The story assumes that \proglangs{} are for machines.
+The sad result is a Turing tar pit
+that matches language features with hardware features.
 }{
 Ask instead ``how to express programming ideas?''
-to address how to convey all the meanings of the humans;
-by assuming that \proglangs{} are for humans,
-your happier result is to match language features with human cognition and social processes,
+to address how to convey all the meanings of the humans.
+The story assumes that \proglangs{} are for humans.
+The happier result is to match language features with human cognition and social processes,
 yielding simpler programming languages.
 }
 
 \SadBetter{Repetition}{
-Ask ``how to handle repetitive programs?'' to address excessive repetition in programs;
-you see the programmer as grunt worker to whom the \proglang{} is a given.
+Ask ``how to handle repetitive programs?'' to address excessive repetition in programs.
+You then see the programmer as grunt worker to whom the \proglang{} is a given.
 The sad result is to theorize repetitions as ``Design Patterns'',
 whereby more programmers endure ever more drudge,
 manually enforcing consistency in patterns being used.
 }{
 Ask instead ``how to remove programming drudge?''
-and like Olin Shivers ``object to doing things that computers can do'';
-you see the programmer as abstract thinker to whom language is a platform for expression.
+and like Olin Shivers ``object to doing things that computers can do''.
+You see the programmer as abstract thinker to whom language is a platform for expression.
 The better result is metaprograms implementing domain-specific languages,
-without which one doesn't actually take advantage of a language's possible Turing-equivalence.
+without which one doesn't actually take advantage of a language's often alleged Turing-equivalence.
 }
 
 \SadBetter{Syntax Extension}{
-Ask about extending the syntax, to address hooking of metaprograms into the existing language;
-your sad result will be side-effects into a One True Syntax as in Common Lisp,
+Ask about extending the syntax,
+to address hooking of metaprograms into the existing language.
+Your story assumes a One True Syntax (as in Common Lisp),
+that will be side-effected to accept extensions,
 with ugly interference as all programmers compete for the same global syntax state.
 }{
-Ask about exploring useful syntaxes, to address how to best express each program fragment;
-your happier result will be scoped syntax specification as in Racket languages or OMeta,
+Ask about exploring useful syntaxes, to address how to best express each program fragment.
+Your happier result will be scoped syntax specification as in Racket languages or OMeta,
 that keep the metaprogramming modular.
 }
 
 \SadBetter{Users vs Programmers}{
-Ask how to address the difference between users and programmers,
+Ask ``how to address the difference between users and programmers'',
 and the sad result of focusing on this difference will be
 dumbed down user interfaces and all-powerful interfaces for developers,
 with lots of frustration on one side of the segregation
 and many painful accidents on the other side.
 }{
 Notice instead that the difference between a programmer and a user is that
-the programmer knows there's no difference between using and programming;
-recognizing that all computer interaction is programming, trivial as programs may be,
+the programmer knows there's no difference between using and programming.
+Recognizing that all computer interaction is programming, trivial as programs may be,
 your happier result will be a single, simpler interface,
 in which a same programming language may be either spoken or written.
 This integrated interface can then accommodate a continuum of proficiencies in users
@@ -258,7 +271,8 @@ of specifying language semantics and implementation strategies.
 }
 
 \SadBetter{Domain Specific Languages}{
-Ask how to get a specialized language, to address heterogeneity in software development activities,
+Ask ``how to get a specialized language?''
+to address heterogeneity in software development activities,
 and your sad result will be segregation of experts by domains each implementing
 their own badly designed external DSL or ``scripting language''.
 }{
@@ -271,17 +285,18 @@ using an appropriate internal DSL.
 \section{Robustness}
 
 \SadBetter{Debugging}{
-Ask how to get your programs debugged, to address bugs that need be fixed;
-your story is then that bugs are an exceptional situation,
+Ask how to get your programs debugged, to address bugs that need be fixed.
+Your story is then that bugs are an exceptional situation,
 and that ad-hoc tools must be retrofitted to handle them.
 Your sad result is a fixed low-level debugger
 with ad-hoc debugging information.
 }{
-Ask how to explore the space of interesting program semantics;
-your story is then that programming is not obvious and requires exploration,
+Ask how to explore the space of interesting program semantics.
+Your story is then that programming is not obvious and requires exploration,
 and that imperfection is the default situation to accept.
 Your better result is an environment for exploration,
-with reversible transformations that compile and decompile code through lenses.}
+with reversible transformations that compile and decompile code through lenses.
+}
 
 \SadBetter{Security}{
 Ask ``how to secure existing software?''
@@ -301,24 +316,24 @@ rather than as an afterwards for each isolated component.
 Programmers are educated to pay attention to details that matter.
 }
 
-\SadBetter{Catastrophe recovery}{
-Ask ``How to deal with catastrophes?''
-to address bad manipulations that cause data loss;
-your story assumes error is exceptional and catastrophic.
+\SadBetter{Catastrophe Recovery}{
+Ask ``how to deal with catastrophes?''
+to address bad manipulations that cause data loss.
+Your story assumes error is exceptional and catastrophic.
 Your sad result is confirm menus, removed file bin, undo button with a few short undo buffer,
 all of them programmer-intensive add-ons that can only handle simple cases
 and introduce failure modes of their own.
 }{
-Ask ``How to whooly eliminate catastrophes?''
-to make bad manipulations unexpressible;
-your story assumes that error is an expected, casual occurrence.
+Ask ``how to whooly eliminate catastrophes?''
+to make bad manipulations unexpressible.
+Your story assumes that error is an expected, casual occurrence.
 Your happier result is that you built the entire system on top of
 monotonic storage that never loses data by construction,
 so that all programs get in(de)finite undo by default.
 Extra performance, not correctness, is what requires additional work.
 }
 
-\SadBetter{Cooperation at a distance}{
+\SadBetter{Programming Interfaces}{
 Ask ``how to document software interfaces?''
 to address the fact that function and module signatures in your \proglang{}
 don't fully formalize software intention.
@@ -340,9 +355,9 @@ based on a cost benefit analysis for what formalism is worth it.\footnote{%
 }}
 
 \SadBetter{Resource Management}{
-Ask ``How to Arbitrate Resource?''
-to address the need to maintain invariants when managing shared resources;
-your story is that a central dictator is needed who will schedule resource possession
+Ask ``how to Arbitrate Resource?''
+to address the need to maintain invariants when managing shared resources.
+Your story is that a central dictator is needed who will schedule resource possession
 between the various processes in your system.
 Your sad result is a mostly monolithic Operating System or Application Kernel
 that will manage a static set of resources according to fixed strategies.
@@ -359,32 +374,32 @@ by a type-aware dynamic linker allowing for a rich algebra of resource bundles.
 \section{Communication}
 
 \SadBetter{Computer Networks}{
-Ask ``How to connect computers?''
-to address the technical and social limits on what a single machine can do;
-your story assumes that many different systems have to be put together.
+Ask ``how to connect computers?''
+to address the technical and social limits on what a single machine can do.
+Your story assumes that many different systems have to be put together.
 Your sad result is complex protocols for remote method invocation,
 shipping objects around, and manually ensuring that
 objects encoded here are decoded there into other objects that are reasonably equivalent.
 }{
-Ask ``How to distribute computation?''
-to address the fact that your computing system is made of many machines;
-your story assumes that all these machines can be conceived as part of a single system
+Ask ``how to distribute computation?''
+to address the fact that your computing system is made of many machines.
+Your story assumes that all these machines can be conceived as part of a single system
 in which many agents interact (be they hardware, software or wetware processes).
 The happier result is declarative deployment and content-based addressing
 of pure data arbitrarily many (or few) copies of which are equivalent by construction.
 }
 
 \SadBetter{Trust}{
-Ask ``How to handle mistrust?''
-to address the need for protection barriers between trust domains;
-your story tells of domains managed by a kernel according to a rigid model.
+Ask ``how to handle mistrust?''
+to address the need for protection barriers between trust domains.
+Your story tells of domains managed by a kernel according to a rigid model.
 Your sad result is a hodge-podge of ad-hoc coarse-grained entities
 (processes, containers, virtual computers)
 that are as expensive to deploy as they are inexpressive in modelling your precise requirements.
 }{
 Ask instead ``how to express limited trust?''
-to address the dynamic creation of bundles of capabilities;
-your story is one where every entity is ``root'' in its own virtual world,
+to address the dynamic creation of bundles of capabilities.
+Your story is one where every entity is ``root'' in its own virtual world,
 and its sub-entities recursively so, by default.
 Your happier result is one where the \proglang{} embeds support for virtual worlds
 in which sub-users can be created cheaply,
@@ -394,7 +409,7 @@ all the mostly irrelevant details of a low-level machine at the assembly level.
 }
 
 \SadBetterEvenBetter{Persistence}{
-Ask ``How to persist important data?''
+Ask ``how to persist important data?''
 to address the need to persist important data in the face of hardware or software failure.
 Your story assumes programmers must manually persist data that is transient by default.
 Your sad result is ad-hoc filesystems and databases
@@ -424,15 +439,15 @@ rather than with ad hoc informally specified bug-ridden slow administration tool
 }
 
 \SadBetterEvenBetter{Change}{
-Ask ``How to Model a changing world?''
+Ask ``how to Model a changing world?''
 to address the issue that mutations happen.
 The story assumes an object-oriented world
 where every object is always mutable at any time by default...
 including by other processes acting in your back.
 The sad result is imperative programming
 where everyone lives in fear, no one can ever trust anyone else,
-except for in expensive short temporary critical sections surrounded by lock operations;
-access invariants are global properties of the entire code base
+except for in expensive short temporary critical sections surrounded by lock operations.
+Access invariants are global properties of the entire code base
 that must be manually enforced by coordinating distributed transactions
 over many source files.
 }{
@@ -474,10 +489,10 @@ Yet, the previous remark shows that what is missing is not technical ability,
 but a shared vision.
 }{
 Indeed, many of the properties sought for a computing system
-are a matter of complete reflection of the system's global semantics;
-they can't be usefully layered as an add-on extension
-to an existing system that doesn't already possess these properties;
-at least not while preserving the transparent availability
+are a matter of complete reflection of the system's global semantics.
+They can't be usefully layered as an add-on extension
+to an existing system that doesn't already possess these properties.
+At least not while preserving the transparent availability
 of the system's existing code base.
 }
 
@@ -527,18 +542,19 @@ who is supposed to gather experience along the process.
 
 %% Either use bibtex (recommended), but commented out in this sample
 
-%\bibliography{dummybib}
+\bibliography{stories}
 
 %% .. or use bibitems explicitely
 
 %\nocite{Simpson}
 
-\begin{thebibliography}{50}
-\bibitem{EngelbartDemo} Douglas Engelbart \textsl{The mother of all demos}. 1968 \\
-	\texttt{http://www.dougengelbart.org/firsts/dougs-1968-demo.html}
-\bibitem{HBaker2005} Henry G. Baker \textsl{The Legacy of Lisp}. International Lisp Conference 2005 \\
-	\texttt{http://www.international-lisp-conference.org/2005/media/baker-slides.pdf}
-\end{thebibliography}
+%\begin{thebibliography}{50}
+%\bibitem{Analects} Confucius \textsl{Analects}.
+%\bibitem{EngelbartDemo} Douglas Engelbart \textsl{The mother of all demos}. 1968 \\
+%	\texttt{http://www.dougengelbart.org/firsts/dougs-1968-demo.html}
+%\bibitem{HBaker2005} Henry G. Baker \textsl{The Legacy of Lisp}. International Lisp Conference 2005 \\
+%	\texttt{http://www.international-lisp-conference.org/2005/media/baker-slides.pdf}
+%\end{thebibliography}
 
 \end{document}
 
