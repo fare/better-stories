@@ -74,8 +74,8 @@ through the bottleneck of a sequential signal stream,
 to be output as a coherent whole,
 then coherently processed back into understanding.
 Now not all stories are equivalent; for stories have consequences,
-and depending on which stories they internalize,
-people may behave quite differently, with very different outcomes.
+and depending on which stories we internalize,
+we may behave quite differently, with very different outcomes.
 To freely translate Confucius \cite{Analects},
 ``when concepts are unfit, plans are unadapted and actions are unsuccessful''.
 Therefore, whichever topic we're interested in,
@@ -110,6 +110,7 @@ towards ever more elaborate patterns.
 
 Let's start with easy story improvements that have a large consensus,
 then focus on programming languages as ways to specify semantics,
+then on issues of software robustness,
 then on non-functional properties of programming environments,
 before we conclude with a meta-story about the previous story improvements.
 
@@ -130,7 +131,7 @@ The underlying story is that \emph{labor} is owned and sold,
 which implies human relationships of contributors and users.
 The result is Free Software distributed as Open Source,
 shaped into maintainability by anyone and everyone who is both interested in it and competent at it
-(quite possibly hired by users who care).
+(quite possibly the competent hired by those more directly interested).
 }
 The shift between the two stories is quite familiar, and many people will agree that
 the first story is a comparatively sad story, and the second story is a happier one.
@@ -142,9 +143,9 @@ that would have been very hard or impossible to achieve before.
 \SadBetter{Factorisation}{
 The question ``how to decompose programs?''
 addresses the concern that
-most software doesn't fit in one brainful.
+most software doesn't fit in one (conscious) brainful.
 Its underlying story is that
-software must follow a hierarchical design into components,
+software must follow a hierarchical decomposition into components,
 fully informed by some central designer.
 The result is top-down management, the waterfall process, and UML diagrams.
 That's a sad story.
@@ -153,10 +154,11 @@ The question ``how to decompose programming?''
 addresses the concern that
 many programmers must cooperate.
 Its underlying story is that
-software development is done by many partially informed programmers who must cooperate.
+software development is done by many partially informed programmers
+with scarce means of coordination.
 The result is the growth of networks of programmers,
 organized around software packages grouped into software distributions.
-This better story scales to larger, more elaborate software.
+This happier story scales to larger, more elaborate software.
 }
 
 \SadBetter{Quality}{
@@ -166,10 +168,11 @@ Its underlying story is that
 each component should be designed by the best possible experts,
 from whom the information will flow to less expert developers;
 in each specific topic, the less expert people are excluded from making decisions.
-Development will be divided into teams be segregated by expertise,
+Development will be divided into teams segregated by expertise,
 each following the best standards defined for the field.
-That's a sad story that leads to the worst repetitions of Conway's Law,
-and people who can't communicate with each other by lack of a common language.
+That's a sad story that leads to the worst demonstrations of Conway's Law,
+and to people who can't communicate with each other by lack of
+a common language to express mutual concerns.
 }{
 Ask instead ``how to foster better programming?''
 to address how to do our best and compete with others,
@@ -177,9 +180,11 @@ learning from our and their successes and failures.
 The story is that you gain experience through experiments,
 with experience as an output, rather than expertise as an input.
 The happier result is to cultivate good incentives,
-where information isn't the limiting factor,
-and instead developers sell services on an open market
-that value both their experience and ability to learn new skills, in communities.
+where the scarce resource isn't information (it's free)
+but coordination (it's expensive),
+and instead developers sell services to modify an open code base
+on an open market that values both their experience and
+their ability to learn new skills, in communities.
 }
 
 \section{Programming Languages}
@@ -198,30 +203,35 @@ The happier result is to match language features with human cognition and social
 yielding simpler programming languages.
 }
 
-\SadBetter{Repetition}{
-Ask ``how to handle repetitive programs?'' to address excessive repetition in programs.
-You then see the programmer as grunt worker to whom the \proglang{} is a given.
+\SadBetter{Redundancy}{
+Ask ``how to deal with repetitive programs?''
+to address excessive repetition in programs.
+You then see the programmer as grunt worker
+to whom the \proglang{} is a given delivery target.
 The sad result is to theorize repetitions as ``Design Patterns'',
 whereby more programmers endure ever more drudge,
 manually enforcing consistency in patterns being used.
 }{
 Ask instead ``how to remove programming drudge?''
 and like Olin Shivers ``object to doing things that computers can do''.
-You see the programmer as abstract thinker to whom language is a platform for expression.
+You see the programmer as abstract thinker to whom language is an evolving platform for expression.
 The better result is metaprograms implementing domain-specific languages,
 without which one doesn't actually take advantage of a language's often alleged Turing-equivalence.
 }
 
 \SadBetter{Syntax Extension}{
-Ask about extending the syntax,
-to address hooking of metaprograms into the existing language.
-Your story assumes a One True Syntax (as in Common Lisp),
-that will be side-effected to accept extensions,
-with ugly interference as all programmers compete for the same global syntax state.
+Ask ``how to extend the syntax?'',
+to address hooking metaprograms into the existing language.
+Your story assumes a One True Syntax that (as in Common Lisp)
+will be side-effected to accept extensions.
+The sad result is ugly interference as all programmers
+compete to grab pieces of the same global syntax state.
 }{
-Ask about exploring useful syntaxes, to address how to best express each program fragment.
-Your happier result will be scoped syntax specification as in Racket languages or OMeta,
-that keep the metaprogramming modular.
+Ask ``how to explore useful syntaxes?'',
+to address the best expression of each program fragment.
+Your story assumes the scoped specialization of syntax.
+Your happier result will be more modular ways of locally specifying syntax,
+as with Racket languages or OMeta.
 }
 
 \SadBetter{Users vs Programmers}{
@@ -235,7 +245,7 @@ Notice instead that the difference between a programmer and a user is that
 the programmer knows there's no difference between using and programming.
 Recognizing that all computer interaction is programming, trivial as programs may be,
 your happier result will be a single, simpler interface,
-in which a same programming language may be either spoken or written.
+in which a same language may be either spoken or written.
 This integrated interface can then accommodate a continuum of proficiencies in users
 with many language levels and dialects.
 }
@@ -333,7 +343,7 @@ so that all programs get in(de)finite undo by default.
 Extra performance, not correctness, is what requires additional work.
 }
 
-\SadBetter{Programming Interfaces}{
+\SadBetter{Interface Documentation}{
 Ask ``how to document software interfaces?''
 to address the fact that function and module signatures in your \proglang{}
 don't fully formalize software intention.
@@ -343,14 +353,16 @@ Your sad result is informal contracts between heterogenous teams,
 leading to a lot of undetected breakage and manual bug fixes.
 }{
 Ask ``how to agree on responsibilities?''
-to address synchronization issues between multiple teams.
+to address cooperation at a distance between multiple teams.
 Your story is that your teams are a given,
-and they get to agree on a formalism as part of their negotiation on how to cooperate.
+and they get to negotiate not just on the interface,
+but at the meta-level on the formalism to express the interface.
 Your happier result is that the teams can formalize contracts
-for the things that they actually care about, though they may have to extend the \proglang{},
-yielding better contracts and types,
-based on a cost benefit analysis for what formalism is worth it.\footnote{%
-  For instance, if you can afford the testing that went into SQLite,
+for the things that they actually care about
+without having to hardwire useless details that they don't care about;
+they may have to extend the \proglang{} to get better contracts and types,
+if after a cost benefit analysis they find the extension of their formalism worth it.\footnote{%
+  For instance, if you can afford the amount of testing that went into SQLite,
   you can probably afford correctness proofs instead.
 }}
 
@@ -371,7 +383,7 @@ by a runtime kernel managing a fixed set of resources, but
 by a type-aware dynamic linker allowing for a rich algebra of resource bundles.
 }
 
-\section{Communication}
+\section{Non-Functional Requirements}
 
 \SadBetter{Computer Networks}{
 Ask ``how to connect computers?''
