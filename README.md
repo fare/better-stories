@@ -1,8 +1,9 @@
 Better Stories, Better Languages (What Would Alyssa P. Hacker Do?)
 ==================================================================
 
-This article, submitted to SNAPL 2015, is based
-on my presentation of the same name,
+This article, submitted to SNAPL 2015,
+	http://snapl.org/2015/cfp.html
+is based on my presentation of the same name,
 initially a lightning talk at ILC'2009,
 then grown into a presentation at Bay Area Lispers 2009,
 	http://fare.tunes.org/computing/bal2009.pdf

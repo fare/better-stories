@@ -91,22 +91,10 @@ can yield completely different programming environments and programs at a higher
 This essay, based on a 2009 talk given to the Bay Area Lispers,
 will present a set of stories, some familiar, some less familiar;
 they will be presented in pairs (or sometimes triples)
-where a sad story is followed by a happier story that improves upon it.
+where a common but sad story is followed
+by a happier story that improves upon it.
 Hopefully, one does not have to be convinced by each and every story improvement
 to get a gist of the overarching meta-story being told.
-
-Our suggested improvements will be inspired by cybernetics:
-a look at the big picture of interactions within a system
-(in this case, the software development ecosystem, that involves both men and machines),
-that tries to identify on the one hand what are the invariants
-(conserved quantities such as energy, information,
-amount of programmer effort, etc.),
-the monotonically increasing variants
-(distance to goal, entropy, etc.),
-and the feedback forces that when negative imply
-stable convergence towards an equilibrium
-and when positive imply runaway evolution
-towards ever more elaborate patterns.
 
 Let's start with easy story improvements that have a large consensus,
 then focus on programming languages as ways to specify semantics,
@@ -510,32 +498,53 @@ of the system's existing code base.
 
 \SadBetter{The Meta-Story}{
 If we analyse the sad and happier stories that we proposed,
-we can identify common patterns, and that constitute
-a meta-story about improving existing stories.
+we can identify common patterns.
+These patterns constitute a meta-story about improving existing stories in general.
 
-One first pattern is that
+One first pattern is as follows:
 sad stories are about the things created,
-about the software as a finished product,
-whereas happier stories about the people creating,
+about the software as a finished product;
+instead happier stories about the people creating,
 about software development as a process.
 
-A second pattern is that
+A second pattern:
 sad stories try to bind good decisions early,
 entrusting them to a supposed experts possessing superior information,
-who will impose constraints to be manually enforced by or upon normal programmers,
-whereas happier stories try to ban bad decisions
-early by making them unexpressible in the interaction design of the system,
-and enable normal programmers with a rich and free expressive algebra in this safe space.
+who will impose constraints to be manually enforced by or upon normal programmers;
+instead happier stories try to ban bad decisions early
+by making them unexpressible in the interaction design of the system,
+abstracting away the drudge of enforcing coherence and safety,
+and enabling normal programmers with a rich and free expressive algebra in this safe space.
 
-A third pattern is that
+A third pattern:
 sad stories tend to segregate people into castes by supposed prior training or expertise,
-each with its own exclusive interface and prerogatives denied to people from other castes,
-whereas better stories offers a common interface to all,
+each with its own exclusive interface and prerogatives denied to people from other castes;
+instead better stories offers a common interface to all,
 and selects user contributions a posteriori based on their value to the development process,
 otherwise without regard to the identity of the contributor,
 who is supposed to gather experience along the process.
-}{}
 
+By focusing on processes rather than products,
+overall algebraic structures rather particular objects and constraints,
+dynamic interactions rather than static organizations,
+we can see patterns that are otherwise invisible.
+That's the essence of Cybernetics\footnote{
+  Cybernetics is a look at the big picture of interactions within a system
+  (in this case, the software development ecosystem, that involves both men and machines),
+  that tries to identify on the one hand what are the invariants
+  (conserved quantities such as energy, information,
+  amount of programmer effort, etc.),
+  the monotonically increasing variants
+  (distance to goal, entropy, etc.),
+  and the feedback forces that when negative imply
+  stable convergence towards an equilibrium
+  and when positive imply runaway evolution
+  towards ever more elaborate patterns.
+}, and computer scientists could greatly benefit from an increased awareness of it,
+for it has implications no just in the design not just of \proglangs{},
+but also of user interfaces, development management, software and hardware architecture,
+distributed systems, etc.
+}{}
 
 
 %\subparagraph*{Acknowledgements}
@@ -551,22 +560,7 @@ who is supposed to gather experience along the process.
 %%
 %% Bibliography
 %%
-
-%% Either use bibtex (recommended), but commented out in this sample
-
 \bibliography{stories}
-
-%% .. or use bibitems explicitely
-
-%\nocite{Simpson}
-
-%\begin{thebibliography}{50}
-%\bibitem{Analects} Confucius \textsl{Analects}.
-%\bibitem{EngelbartDemo} Douglas Engelbart \textsl{The mother of all demos}. 1968 \\
-%	\texttt{http://www.dougengelbart.org/firsts/dougs-1968-demo.html}
-%\bibitem{HBaker2005} Henry G. Baker \textsl{The Legacy of Lisp}. International Lisp Conference 2005 \\
-%	\texttt{http://www.international-lisp-conference.org/2005/media/baker-slides.pdf}
-%\end{thebibliography}
 
 \end{document}
 
@@ -575,3 +569,4 @@ TODO:
 * remplacer les ; par des .
 * conclusion
 * rentre dans les 8 pages sans débordement
+* introduce Alyssa P. Hacker
