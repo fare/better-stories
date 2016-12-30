@@ -1,6 +1,8 @@
-all: snapl2015-fare.pdf
+all: better-stories.PDF
 
-all: snapl2015-fare.PDF
+install: better-stories.pdf
+	rsync -av $< ~/files/better-stories/
+	rsync -av $< fare@bespin.org:files/better-stories/
 
 %.pdf: %.tex
 	pdflatex $*
@@ -8,4 +10,4 @@ all: snapl2015-fare.PDF
 	pdflatex $*
 
 %.PDF: %.pdf
-	view.sh $<
+	xpdf -z page -fullscreen $< ${p}

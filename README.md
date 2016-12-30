@@ -1,13 +1,16 @@
 Better Stories, Better Languages (What Would Alyssa P. Hacker Do?)
 ==================================================================
 
-This article, submitted to SNAPL 2015,
-	http://snapl.org/2015/cfp.html
-is based on my presentation of the same name,
+This article, is based on my presentation of the same name,
 initially a lightning talk at ILC'2009,
 then grown into a presentation at Bay Area Lispers 2009,
-	http://fare.tunes.org/computing/bal2009.pdf
-then made part of a presentation at LispNYC in October 2014.
+< http://fare.tunes.org/computing/bal2009.pdf >
+then made part of a presentation at LispNYC in October 2014:
+< https://vimeo.com/152109286 >
+
+It was submitted to SNAPL 2015, and rejected, having offended a reviewer
+by presenting free software as an improvement over proprietary software:
+	http://snapl.org/2015/cfp.html
 
 
 Viewing the article
