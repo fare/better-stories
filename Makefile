@@ -11,3 +11,6 @@ install: better-stories.pdf
 
 %.PDF: %.pdf
 	xpdf -z page -fullscreen $< ${p}
+
+fare-lambdaconf2017.html: fare-lambdaconf2017.rkt
+	racket $< > $@
