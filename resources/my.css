@@ -1,0 +1,9 @@
+.reveal h1 { font-size: 1.2em; }
+
+table, th, td {
+    border: 1px solid black;
+}
+
+html {
+  background-color: #fff !important;
+}
