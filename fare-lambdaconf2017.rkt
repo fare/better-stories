@@ -45,10 +45,10 @@ This document is available under the bugroff license.
   ;; (cons "http://cdn.jsdelivr.net/reveal.js/3.0.0/" text)
   (cons "resources/reveal/" text))
 
-(define (L . x) (div align: 'left x))
+(define (L . x) (apply div align: 'left x))
 (define (t . x) x)
-(define (C . x) (div align: 'center x))
-(define (CB . x) (C (b x)))
+(define (C . x) (apply div align: 'center x))
+(define (CB . x) (C (apply b x)))
 
 (define (url x) (a href: x (tt x)))
 (define (comment . x) '())
@@ -141,8 +141,9 @@ This document is available under the bugroff license.
    (td (image "real-genius.jpg" "https://i.jeded.com/i/real-genius.16835.jpg" "24%")))
   (tr
    (td (image "holy-bible.jpg" "https://thewrittenwordreviews.files.wordpress.com/2009/03/holy-bible-cover.jpg" "10%"))
-   (td (image "decline-and-fall.jpg" "https://images-na.ssl-images-amazon.com/images/I/51LaFDYYMGL._SX362_BO1,204,203,200_.jpg" "40%"))
+   ;;(td (image "decline-and-fall.jpg" "https://images-na.ssl-images-amazon.com/images/I/51LaFDYYMGL._SX362_BO1,204,203,200_.jpg" "40%"))
    (td (image "gulag-archipelago.jpg" "https://images-na.ssl-images-amazon.com/images/I/41LZ%2BGzRwjL._AC_UL320_SR206,320_.jpg" "80%"))
+   (td (image "huckleberry-finn.jpg" "https://cdn2.hubspot.net/hub/237126/file-534578648-jpg/Huckleberry_Finn_Cover.jpg" "33%"))
    (td (image "the-importance-of-being-earnest.jpg" "http://1tsp5vpomo32awvuo47ta7f1.wpengine.netdna-cdn.com/wp-content/uploads/2017/03/the-importance-of-being-earnest-cover.jpg" "28%"))))
   @comment{
 Hi. I'm Faré and I love storytelling.
@@ -162,13 +163,13 @@ And not just the world, but our role in the world.
 (slide
   @h1{Universal Stories}
   (let ((theme-pic
-         '(("Boy meets girl" "lovelace-babbage.jpg" "https://images-na.ssl-images-amazon.com/images/I/91FCUHSgEAL.jpg" "10%")
-           ("Eating the forbidden fruit" "alan-turing.jpg" "http://i.dailymail.co.uk/i/pix/2014/12/11/066267B800000514-0-The_famous_early_computer_inventor_and_war_hero_Alan_Mathison_Tu-m-17_1418322993327.jpg" "60%")
-           ("Novice grows into Master" "torvalds.jpg" "https://www.linux.com/sites/lcom/files/gallery/Linux%20Beer%20Use.jpg" "40%")
+         '(("Boy Meets Girl" "lovelace-babbage.jpg" "https://images-na.ssl-images-amazon.com/images/I/91FCUHSgEAL.jpg" "10%")
+           ("Man Eats Forbidden Fruit" "alan-turing.jpg" "http://i.dailymail.co.uk/i/pix/2014/12/11/066267B800000514-0-The_famous_early_computer_inventor_and_war_hero_Alan_Mathison_Tu-m-17_1418322993327.jpg" "60%")
+           ("Novice Grows into Master" "torvalds.jpg" "https://www.linux.com/sites/lcom/files/gallery/Linux%20Beer%20Use.jpg" "40%")
            ("Horror Hidden at Home" "heartbleed.jpg" "https://www.eff.org/files/2014/04/10/heartbleed-01-sm_0.jpg" "66%"))))
     (table
-     (tr (map (λ (x) (td width: "25%" (first x))) theme-pic))
-     (tr (map (λ (x) (td valign: "top" (apply image (rest x)))) theme-pic))))
+     (tr (map (λ (x) (td valign: 'top (apply image (rest x)))) theme-pic))
+     (tr (map (λ (x) (td width: "25%" (font color: "white" (first x)))) theme-pic))))
   @comment{
 There are many common stories so general that they can apply in any kind human situation.
 
@@ -197,9 +198,9 @@ I want to show you that some stories lead to better outcomes than others.
 
 (x-slide
  @h1{This Talk}
- @p{Take a @bg-colorize[*light-red*]{sad so-o-ong},
+ @L{Take a @bg-colorize[*light-red*]{sad so-o-ong},
             and make it @bg-colorize[*light-blue*]{be-e-etter}}
- @p{Let's start with easy ones you already know...})
+ @L{Let's start with a couple easy ones you already know...})
 
 (xad-slide
  #:sad-question "How to fund software?"
@@ -436,23 +437,26 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-story '("" "")
  #:rad-solution '("" ""))
 
-(x-slide
+(slide
  @h1{The Grand Challenge}
- @p{None of these Stories is revolutionary} ;; From The Mother of All Demos...
- @p{Each has been foretold in past systems} ~ ;; Implemented, though not always optimized and productized
- @p[class: 'fragment]{But no @em{system} embodies them all at once} ;; Opportunity!
- @p[class: 'fragment]{Missing: @em{vision}, not technical ability})
+ ~
+ @L{None of these Stories is revolutionary} ;; From The Mother of All Demos...
+ @L{Each has been foretold in past systems} ;; Implemented, though not always optimized and productized
+ ~
+ @L[class: 'fragment]{But no @em{system} embodies them all at once} ;; Opportunity!
+ @L[class: 'fragment]{Missing: @em{vision}, not technical ability})
 
 (slide
  @h1{The Meta-Story}
+ ~
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
- @p[class: 'fragment]{Sad Stories: about Things Created}
- @p[class: 'fragment]{Better Stories: about People Creating} ~
+ @L[class: 'fragment]{Sad Stories: about Things Created}
+ @L[class: 'fragment]{Better Stories: about People Creating} ~
  ;; Desire control and look for solution hardwired in advance by experts who know better vs
  ;; Embrace change and let users express their needs in a safe space where bad situations are impossible by construction
- @p[class: 'fragment]{Sad Stories: bind good early}
- @p[class: 'fragment]{Better Stories: ban bad early})
+ @L[class: 'fragment]{Sad Stories: bind good early}
+ @L[class: 'fragment]{Better Stories: ban bad early})
 
 #| Submission to LambdaConf 2017:
 

@@ -1,4 +1,4 @@
-all: better-stories.PDF
+all: fare-lambdaconf2017.html # better-stories.PDF
 
 install: better-stories.pdf
 	rsync -av $< ~/files/better-stories/
