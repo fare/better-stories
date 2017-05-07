@@ -91,17 +91,23 @@ This document is available under the bugroff license.
       l))
 
 (define (aa x) (λ (y) (tr (th x) (td border: 'below (spacing y)))))
+(define Question (aa "Question"))
 (define Issue (aa "Issue"))
 (define Story (aa "Story"))
-(define Solution (aa "Solution"))
-(define Tools (aa "Tools"))
+(define Solution (aa "Tools")) ;; Solution
+;;(define Tools (aa "Tools"))
+
+(define (color text #:fg (fgcolor #f) #:bg (bgcolor #f))
+  (span style: (list (if fgcolor (list "color:" fgcolor ";") '())
+                     (if bgcolor (list "background-color:" bgcolor ";") '()))
+        text))
 
 (define (bg-slide text fgcolor bgcolor)
   (λ x
     (slide
      data-background: bgcolor
      (spacing x)
-     (div align: 'right valign: 'bottom style: (list "color:" fgcolor ";") text))))
+     (div align: 'right valign: 'bottom (color #:fg fgcolor text)))))
 
 (define sad-slide  (bg-slide "Sad..." *red* *light-red*))
 (define rad-slide  (bg-slide "Better!" *blue* *light-blue*))
@@ -109,26 +115,56 @@ This document is available under the bugroff license.
 (define (x-slide . x) (slide (spacing x)))
 
 (define (zad-slide slide #:question question #:issue issue #:story story #:solution solution)
-  (slide (h1 question)
+  (slide ;;(h1 question)
          (table
           frame: 'below
+          (Question question)
           (Issue issue)
           (Story story)
           (Solution solution)
           (tr (td) (td " ")))))
 
+(define (srad-slide #:sad-issue sad-issue #:sad-question sad-question
+                    #:sad-story sad-story #:sad-solution sad-solution
+                    #:rad-issue rad-issue #:rad-question rad-question
+                    #:rad-story rad-story #:rad-solution rad-solution)
+  (define (row name sad rad)
+    (tr ;; (th width: "4%" name)
+        (td width: "50%" bgcolor: *light-red* (spacing sad))
+        (td width: "50%" bgcolor: *light-blue* (spacing rad))))
+  (slide (table width: "100%" align: 'center
+          frame: 'below
+          (row "Question" sad-question rad-question)
+          (row "Issue" sad-issue rad-issue)
+          (row "Story" sad-story rad-story)
+          (row "Tools" sad-solution rad-solution)
+          (tr (td align: 'right bgcolor: *light-red*
+                  (div align: 'right (color "Sad..." #:fg *red*)))
+              (td align: 'right bgcolor: *light-blue*
+                  (div align: 'right (color "Better!" #:fg *blue*)))))))
+
 ;; TODO: write a match expander for runtime destructuring of arguments
 
-(define (xad-slide #:sad-issue sad-issue #:sad-question sad-question
-                   #:sad-story sad-story #:sad-solution sad-solution
-                   #:rad-issue rad-issue #:rad-question rad-question
-                   #:rad-story rad-story #:rad-solution rad-solution
-                   #:krad-issue (krad-issue #f) #:krad-question (krad-question #f)
-                   #:krad-story (krad-story #f) #:krad-solution (krad-solution #f))
+(define (xad-slide
+         #:separate? (separate? #f) #:side-by-side? (side-by-side? #t)
+         #:sad-issue sad-issue #:sad-question sad-question
+         #:sad-story sad-story #:sad-solution sad-solution
+         #:rad-issue rad-issue #:rad-question rad-question
+         #:rad-story rad-story #:rad-solution rad-solution
+         #:krad-issue (krad-issue #f) #:krad-question (krad-question #f)
+         #:krad-story (krad-story #f) #:krad-solution (krad-solution #f))
   (list
-   (zad-slide sad-slide #:question sad-question #:issue sad-issue #:story sad-story #:solution sad-solution)
-   (zad-slide rad-slide #:question rad-question #:issue rad-issue #:story rad-story #:solution rad-solution)
-   (when krad-issue (zad-slide krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
+   (when separate?
+     (list
+      (zad-slide sad-slide #:question sad-question #:issue sad-issue #:story sad-story #:solution sad-solution)
+      (zad-slide rad-slide #:question rad-question #:issue rad-issue #:story rad-story #:solution rad-solution)))
+   (when side-by-side?
+     (srad-slide #:sad-issue sad-issue #:sad-question sad-question
+                 #:sad-story sad-story #:sad-solution sad-solution
+                 #:rad-issue rad-issue #:rad-question rad-question
+                 #:rad-story rad-story #:rad-solution rad-solution))
+   (when krad-issue
+     (zad-slide krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
 
 (x-slide
   @h1{Better Stories, Better Languages}
@@ -199,7 +235,7 @@ I am not going to discuss those stories today.
  @h1{The Take Home Points}
  @L{Stories @em{matter}}
  @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
- @L{New|better stories to invent new|better tools}
+ @L{Better tools via better stories}
  @L{Explicit stories are a great meta-tool...}
  @comment{
 I want to show you that the stories we tell *matter*.
@@ -217,13 +253,14 @@ I want to show you that some stories lead to better outcomes than others.
  @L{Let's start with a couple easy ones you already know...})
 
 (xad-slide
+ #:separate? #t #:side-by-side? #t
  #:sad-question "How to fund software?"
- #:sad-issue "Software costs money to produce"
- #:sad-story '("Software is scarce, owned and sold" "Vendors & customers (static)")
+ #:sad-issue "Software costly to produce"
+ #:sad-story '("own & sell scarce software " "vendors & customers") ;; (static)
  #:sad-solution '("Proprietary Software" "Closed binaries") ;; unmaintainable by anyone but the vendor, if interested
  #:rad-question "How to fund programming?"
- #:rad-issue "Starved programmers don't code"
- #:rad-story '("Labor is scarce, owned and sold" "Contributors & users (dynamic)")
+ #:rad-issue "Starved coders don't code"
+ #:rad-story '("own & sell scarce labor" "contributors & users") ;; (dynamic)
  #:rad-solution '("Free Software" "Open Source")) ;; shaped into maintainability by shared maintenance
 
 (x-slide
@@ -239,216 +276,231 @@ I want to show you that some stories lead to better outcomes than others.
 (slide @h1{Simple Programming Stories})
 (xad-slide
  #:sad-question "Decompose programs?" ; (how to...)
- #:sad-issue "Software doesn't fit in one brainful"
- #:sad-story '("Hierarchical design into components" "… by fully informed designer")
- #:sad-solution '("Top-down management" "UML diagrams")
+ #:sad-issue "Software too large for one brainful"
+ #:sad-story '("Hierarchy of components" "by fully informed expert")
+ #:sad-solution '("Flowcharts, UML" "Top-down management")
  #:rad-question "Decompose programming?"
- #:rad-issue "Many programmers must cooperate"
- #:rad-story '("Each brings partial information" "Growing a network of projects")
- #:rad-solution '("Software distributions" "Distributed version control"))
+ #:rad-issue "Cooperation needed by many brains"
+ #:rad-story '("Propagate partial info along" "network of people, projects")
+ #:rad-solution '("SW distributions, forums" "Distributed version control"))
 
 (xad-slide
  #:sad-question "Achieve great software?" ; (how to...)
- #:sad-issue "Software is hard to design"
- #:sad-story '("Disseminate expert information"
-               "Restrict each component to best experts")
+ #:sad-issue "Improving software is hard"
+ #:sad-story '("Disseminate expertise"
+               "Restrict modules to experts")
  #:sad-solution '("Standards" "Segregation by expertise") ;; Conway's Law
  #:rad-question "Foster better programming?"
- #:rad-issue '("Be better selves, be better rivals") ;; learn from our and their successes and failures
- #:rad-story '("Learn from experience (others', or yours)" ;; experience as an output, rather than expertise as an input
+ #:rad-issue '("Improving ourselves is hard") ;; learn from our and their successes and failures
+ #:rad-story '("Learn from experience" ;; other people's, or your own; experience as an output, rather than expertise as an input
                "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution '("Learn in communities" "Select from competitive market")))
+ #:rad-solution '("Communities" "Competition in markets")))
 
 (slide
 (x-slide @h1{Programming Language Stories})
 (xad-slide
- #:sad-question "Make a Device Programmable?" ; (how to...)
- #:sad-issue "Expose the device's features to a PL"
+ #:sad-question "Make device programmable" ; (how to...)
+ #:sad-issue "Expose device features"
  #:sad-story '("PLs are for machines")
- #:sad-solution '("Match PL features to device capabilities"
+ #:sad-solution '("match device capabilities"
                   "Turing tar pit")
- #:rad-question "Express programming ideas?"
- #:rad-issue "Convey all meanings of the humans"
+ #:rad-question "Express programming ideas"
+ #:rad-issue "Convey human meanings"
  #:rad-story '("PLs are for humans")
- #:rad-solution '("Match PL structure to human cognition" ;; and social processes
-                  "Simpler programming languages")) ;; intrinsic vs incidental complexity
+ #:rad-solution '("match human cognition" ;; and social processes
+                  "minimize complexity")) ;; intrinsic vs incidental complexity
 
 (xad-slide
- #:sad-question "Handle repetitive programs?" ; (how to...)
- #:sad-issue "Lots of repetition in programs"
- #:sad-story '("Language as a given" "Programmer as grunt worker")
- #:sad-solution '("Theorize repetitions as Design Patterns" "More programmers repeating, under orders") ;; manually enforce consistency
- #:rad-question "Remove programming drudgery?"
+ #:sad-question "Handle repetitive code" ; (how to...)
+ #:sad-issue "Lots of repetition in code"
+ #:sad-story '("Language as given" "Programmer as drudge")
+ #:sad-solution '("Informal Design Patterns" "Plan more drudgery") ;; manually enforce consistency
+ #:rad-question "Remove coding drudgery"
  #:rad-issue "Drudgery in programming" ;; "I object to doing things that computers can do." — Olin Shivers
- #:rad-story '("Language as an evolving platform" "Programmer as abstract thinker")
- #:rad-solution '("Metaprograms" "PL extensibility (macros…)")) ;; Turing's theorem is based on metaprograms!
+ #:rad-story '("Language as evolving" "Programmer as thinker")
+ #:rad-solution '("Formal Metaprograms" "Evolve language")) ;; Turing's theorem is based on metaprograms!
 
 (xad-slide
  #:sad-question "Have an extensible syntax?" ; (how to...)
  #:sad-issue "Hooks into existing syntax" ;; assuming we want extensibility
- #:sad-story '("Side-effect the One True Syntax" "") ;; as in Common Lisp
+ #:sad-story '("Side-effect One True Syntax") ;; as in Common Lisp
  #:sad-solution '("Global macros" "Global readtable")
  #:rad-question "Explore useful syntaxes?"
- #:rad-issue "Best express each program fragment"
- #:rad-story '("Exploration of many syntaxes" "")
+ #:rad-issue "Best express each fragment"
+ #:rad-story '("Pure grammar increments")
  #:rad-solution '("Scoped syntax specification" "Racket languages, OMeta"))
 
 (xad-slide
  #:sad-question "Users ≠ Programmers" ; (how to address the fact that...)
- #:sad-issue "Users and Programmers differ"
- #:sad-story '("Dumbed down UI for Users" "All-Power for Devs (in VM)")
+ #:sad-issue "Two paradigms, UI vs PL"
+ #:sad-story '("Dumbing down for Users" "All-Power for Devs (in VM?)")
  #:sad-solution '("Unrelated UI and PL" "Segregation")
  #:rad-question "Using = Programming"
  ;; The difference between a programmer and a user, is that
  ;; the programmer knows there is no difference between using and programming. — Faré
- #:rad-issue "One language, spoken or written"
- #:rad-story '("Computer interaction is programming" "Continuum of proficiency in users")
- #:rad-solution '("Integrated interactive interface" "Language levels and dialects"))
+ #:rad-issue "One PL, spoken or written"
+ #:rad-story '("One computer interaction" "Continuum of proficiency")
+ #:rad-solution '("Integrated interface" "PL levels and dialects"))
 
 (xad-slide
- #:sad-question "Programmer ≠ PL Implementer" ; (how to address the fact that...)
+ #:sad-question "P'er ≠ PL Implementer" ; (how to address the fact that...)
  #:sad-issue "Writing a compiler is hard" ;; a correct one even worse
- #:sad-story '("Specialists write compiler" "Mere programmers use")
- #:sad-solution '("Closed implementation for each PL" "")
- #:rad-question "Programming = PL Implementing" ; Programming *is* implementing the language spoken by the users!
- #:rad-issue "Incremental DSL development" ; only hard if not done from scratch
- #:rad-story '("Special case of Using = Programming" "P implements PL spoken by users")
- #:rad-solution '("Support for DSL" "First-class implementations")) ; PCLSRing
+ #:sad-story '("Specialists implement PL" "Mere programmers use PL")
+ #:sad-solution '("Closed PL implementations" "Few, magic, PLs")
+ #:rad-question "P'ing = PL Implementing" ; Programming *is* implementing the language spoken by the users!
+ #:rad-issue "Modular DSL increments" ; only hard if not done from scratch
+ #:rad-story (list "Special case of U = P" @em{Each P is PL spoken by U})
+ #:rad-solution (list @em{First-class implementations} "Lots of DSLs")) ; PCLSRing
 
 (xad-slide
- #:sad-question "PL Definer ≠ PL Implementer" ; (how to address the fact that...)
- #:sad-issue "Designing a language is hard" ; once again, only for experts
- #:sad-story '("Specialists define big language" "Others implement")
+ #:sad-question "PL Definer ≠ Implementer" ; (how to address the fact that...)
+ #:sad-issue "Designing a PL is hard" ; once again, only for experts
+ #:sad-story '("Specialists define big PL" "Others implement")
  #:sad-solution '("Standard for language" "Decades-old design") ; blind spot, slow update cycle, bit rot
- #:rad-question "PL Defining = PL Implementing"
- #:rad-issue "Specifying Semantics = Implementing"
- #:rad-story '("Declarative specification" "Orthogonal implementation strategies")
- #:rad-solution '("Grammatical mixins" "Monadic lifting"))
+ #:rad-question "PL Defining = Implementing"
+ #:rad-issue "Specify = Implement"
+ #:rad-story '("Declarative specification" "Orthogonal impl. strategies")
+ #:rad-solution '("Grammatical mixins" "Pervasive experimentation"))
 
 (xad-slide
  #:sad-question "Get a specialized language?" ; (how to...)
- #:sad-issue "Software involves heterogeneous activities"
+ #:sad-issue "Heterogeneous activities"
  #:sad-story '("Each domain its experts" "Segregation of experts")
  #:sad-solution '("External DSLs" "Scripting languages")
  #:rad-question "Specialize conversation?"
  #:rad-issue "Express domain expertise"
  #:rad-story '("One brain, many topics" "Adapt PL to domain")
- #:rad-solution '("Internal DSLs" "Universal PL, many contexts")))
+ #:rad-solution '("Internal DSLs" "Contexts of universal PL")))
 
 (slide
 (x-slide @h1{Programming Quality Stories})
 (xad-slide
- #:sad-question "Get Programs Debugged?" ; (how to...)
- #:sad-issue "Programs have bugs, need be fixed"
- #:sad-story '("Bug is an exceptional situation" "Ad-hoc tools retrofitted")
- #:sad-solution '("Low-level debugger" "Ad-hoc debugging information")
- #:rad-question "Exploring Program Semantics?"
- #:rad-issue "Programming isn't obvious, needs exploring"
- #:rad-story '("Imperfect is the default situation" "Environment for exploration")
+ #:sad-question "Get Programs Debugged" ; (how to...)
+ #:sad-issue "Program bugs need fixed"
+ #:sad-story '("Bugs are exceptions" "Ad-hoc tools retrofitted")
+ #:sad-solution '("Low-level debugger" "Ad-hoc debug info")
+ #:rad-question "Explore Program Semantics"
+ #:rad-issue "Semantics isn't obvious"
+ #:rad-story '("Imperfection is the default" "Exploration is normal")
  #:rad-solution '("Compiler as reversible lens" "Experiment in Virtual World"))
 
 (xad-slide
  #:sad-question "Secure existing software?" ; (how to...)
- #:sad-issue "Security is a hard, requires specialists"
+ #:sad-issue "Security its own expertise"
  #:sad-story '("Security as afterthought"
-                "Security by independent experts")
+               "Independent Sec. experts")
  #:sad-solution '("Forever patch leaks" "Low-level protection")
  #:rad-question "Build software securely?"
- #:rad-issue "Security is intrinsic to software design"
- #:rad-story '("Design with security from start" "Educate programmers")
- #:rad-solution '("Whole-system protocol design" "Capabilities"))
+ #:rad-issue "Security as aspect of Design"
+ #:rad-story '("Sec part and parcel of P" "Programmer education")
+ #:rad-solution '("Whole-system design" "High-level capabilities"))
 
 (xad-slide
  #:sad-question "Dealing with catastrophes?" ; (how to...)
- #:sad-issue "Bad manipulations cause data loss"
- #:sad-story '("Error is exceptional, catastrophic" "")
- #:sad-solution '("Confirm menus, remove bin" "Undo last (few)") ;; programmer-intensive add-ons
+ #:sad-issue "Bad manip. → Data loss"
+ #:sad-story '("Exceptional catastrophes")
+ #:sad-solution (list "Confirm menus, remove bin"
+                      @list{Expensive ad hoc "Undo"}) ;; programmer-intensive add-ons
  #:rad-question "Eliminating catastrophes?"
- #:rad-issue "Make bad manipulations unexpressible"
- #:rad-story '("Error is normal, casual" "")
- #:rad-solution '("monotonic storage never loses data"
-                   "Infinite undo"))) ;; system-provided default
+ #:rad-issue "Bad manip. unexpressible"
+ #:rad-story '("Everyday trivial failures")
+ #:rad-solution '("Monotonic storage"
+                  "Universal infinite undo"))) ;; system-provided default
 
 (slide
 (x-slide @h1{More Programming Stories})
 (xad-slide
- #:sad-question "Document software interfaces?" ; (how to...)
- #:sad-issue "PL can't formalize software intention"
- #:sad-story '("Document what can't be expressed" "PL as a given")
- #:sad-solution '("Informal contracts" "between heterogenous teams")
- #:rad-question "Agree on Responsibilities?"
- #:rad-issue "Formalism has costs and benefits"
- #:rad-story '("Formalize contracts" "PL extended as needed")
- #:rad-solution '("Better contracts and types"
-                   "Cost benefit analysis")) ;; if you can afford the testing that went into SQLite, you can afford proofs.
+ #:sad-question "Document conventions" ; (how to...)
+ #:sad-issue "Define module interfaces"
+ #:sad-story '("PL as given, modules fixed"
+               "PL limit expressible intent")
+ #:sad-solution '("Informal contracts"
+                  "Fixed team boundaries")
+ #:rad-question "Agree on responsibilities"
+ #:rad-issue "Define team interfaces"
+ #:rad-story '("Extend PL, trade modules"
+               "Express if benefit > cost")
+ ;; if you can afford the testing that went into SQLite, you can afford proofs.
+ #:rad-solution '("Formalize contracts"
+                  "Negotiate responsibilities"))
 
 (xad-slide
  #:sad-question "Arbitrate Resource?" ; (how to...)
- #:sad-issue "Need invariants on shared resources"
- #:sad-story '("Central dictator needed" "Schedule resource possession")
- #:sad-solution '("(OS or App) Kernel" "Static set of resources")
+ #:sad-issue "Maintain shared invariants"
+ #:sad-story '("Central dictator needed"
+               "Schedule resource use")
+ #:sad-solution '("(OS or App) Kernel"
+                  "Static set of resources")
  #:rad-question "Resolve Conflicts?"
- #:rad-issue "Identify owner of resource bundles"
+ #:rad-issue "Owners trade resources"
  #:rad-story '("Self-enforcing contracts"
-                "Linear logic expresses ownership")
- #:rad-solution '("Invariant-enforcing linker" "Dynamic resource bundles"))
+               "Linear logic of ownership")
+ #:rad-solution '("Invariant-enforcing linker"
+                  "Dynamic resource bundles"))
 
 (xad-slide
- #:sad-question "Connect Computers?" ; (how to...)
- #:sad-issue "Single machine can't do it all" ; both technical and social limits
- #:sad-story '("Putting together many systems" "")
- #:sad-solution '("Remote method invocation" "Shipping information around")
- #:rad-question "Distribute Computation?"
- #:rad-issue "System is made of many machines"
- #:rad-story '("One system, many agents" "")
- #:rad-solution '("Declarative deployment" "Content-based addressing"))
+ #:sad-question "Connect Computers" ; (how to...)
+ #:sad-issue "Overcome one-system limit" ; both technical and social limits
+ #:sad-story '("From machines to meaning"
+               "Many cpus, weak federation" )
+ #:sad-solution '("Remote method invocation"
+                  "Shipping state around")
+ #:rad-question "Distribute Computation"
+ #:rad-issue "Beat many-cpu complexity"
+ #:rad-story '("From meaning to machines"
+               "One system, many cpus")
+ #:rad-solution '("Declarative deployment"
+                  "Content-based addressing"))
 
 (xad-slide
  #:sad-question "Handle mistrust?" ; (how to...)
  #:sad-issue "Need protection barriers"
  #:sad-story '("Kernel-managed domains" "Expensive rigid model")
- #:sad-solution '("processes, containers, virtual PCs" "Expensive and inexpressive")
+ #:sad-solution '("Static container hierarchy"
+                  "Expensive and inexpressive")
  #:rad-question "Express limited trust?"
- #:rad-issue "Dynamic bundles of capabilities"
- #:rad-story '("Everyone "root" in own VW" "Recursively so, by default")
- #:rad-solution '("PL support for VW" "Cheap to create sub-user"))
+ #:rad-issue "Bundle capabilities"
+ #:rad-story (list @list{Everyone "root" in own VM}
+                   "Recursively so, by default")
+ #:rad-solution '("PL support virtualization"
+                  "Cheap to create sub-user"))
 
 (xad-slide
  #:sad-question "Persist important data?" ; (how to...)
  #:sad-issue "Important data must persist" ; against HW/SW failure
- #:sad-story '("Programmer must manually persist data"
-                "Transient by default")
- #:sad-solution '("Ad-hoc filesystems, databases" "Explicit I/O")
+ #:sad-story '("Manual persistence"
+               "Transient by default")
+ #:sad-solution '("Filesystems, databases" "Explicit I/O")
  #:rad-question "Write persistent software?"
  #:rad-issue "All data is important"
  #:rad-story '("Why else program about it?"
-                ;; You don't care when memory is spilled from cache to RAM,
-                ;; why care when it's spilled from RAM to disk?
-                "Persistence by default") ;; Transients for performance
- #:rad-solution '("Orthogonal persistent"
-                   "Implicit support in PL")))
+               ;; You don't care when memory is spilled from cache to RAM,
+               ;; why care when it's spilled from RAM to disk?
+               "Persistence by default") ;; Transients for performance
+ #:rad-solution '("Orthogonal persistence"
+                  "Implicit support in PL")))
 
 (slide
 (x-slide @h1{Stories about change})
 (xad-slide
  #:sad-question "Model a changing world?" ; (how to...)
- #:sad-issue "Mutations happen — Object-Oriented"
- #:sad-story '("Data is always mutable... by others!"
-                "Can't trust anything or anyone")  ;; live in a world of fear
+ #:sad-issue "Mutations happen"
+ #:sad-story '("Mutable Object-Oriented"
+               "Can't trust any(thing|one)")  ;; live in a world of fear
  #:sad-solution '("Imperative programming"
-                   "Locks: expensive temporary protection")
- #:rad-question "Model changes to the world?"
- #:rad-issue "Transforms compose — Value-Oriented"
- #:rad-story '("Immutable values, at least by default"
-                "Can always reason about programs")
- #:rad-solution '("Functional PL (OCaml, Haskell)" ;;  Purity by default, at base-level, at meta-level, too... Unlambda!
-                   "Effects or Monads") ;; Problem: too much or too little
+                  "Locks: transient protection")
+ #:rad-question "Model changes to world?"
+ #:rad-issue "Transformations compose"
+ #:rad-story '("Immutable Value-Oriented"
+               "Can always reason")
+ #:rad-solution '("Functional Programming" ;; Purity by default, at base-level, at meta-level, too... Unlambda!
+                  "Monads, extensible effects") ;; Problem: too much or too little
  #:krad-question "Discuss relevant change?"
- #:krad-issue "First-class change — Change-Oriented"
- #:krad-story '("State is meta-level modularity"
-                 "Mutable vs immutable views on code")
- #:krad-solution '("Differentiation and Integration"
-                    "Switch view to/from Monadic style")))
+ #:krad-issue "Record and Process Change Events"
+ #:krad-story (list "First-class Change-Oriented"
+                    @list{Mutable vs immutable @em{views} on code})
+ #:krad-solution '("Differentiate state, Integrate changes"
+                   "Switch view to/from FP")))
 
 #;
 (xad-slide
@@ -476,8 +528,8 @@ I want to show you that some stories lead to better outcomes than others.
  @h1{The Take Home Points (redux)}
  @L{Stories @em{matter}}
  @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
- @L{New|better stories to invent new|better tools}
- @L{Explicit stories are a great meta-tool...})
+ @L{Better tools via better stories}
+ @L{Explicit stories as great meta-tool...})
 
 (slide
  @h1{The Meta-Story}
@@ -490,8 +542,8 @@ I want to show you that some stories lead to better outcomes than others.
  ;; Desire control and look for solution hardwired in advance by experts who know better vs
  ;; Embrace change and let users express their needs in a safe space where bad situations are impossible by construction
  (div class: 'fragment
-  @L{Sad Stories: bind good early} ;; choose the solution at the time people know least
-  @L{Better Stories: ban bad early}) ;; make the issues inexpressible, create a safe space of freedom
+  @L{Sad Stories: bind good early, impose ignorance} ;; choose the solution at the time people know least
+  @L{Better Stories: ban bad early, create freedom}) ;; make the issues inexpressible, create a safe space of freedom
  @comment{Any question?}))
 
 
