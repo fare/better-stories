@@ -13,17 +13,27 @@ This document is available under the bugroff license.
 
 |#
 
-(require scribble/html)
-(require net/url)
+(require
+ scribble/html
+ net/url
+ (for-syntax syntax/parse))
 
 ;; http://docs.racket-lang.org/scribble/extra-style.html
 
 ;; Reveal and new html stuff
 (define/provide-elements/not-empty section video) ; more tags here
-(define-values [get-slides slide]
-  (let ([slides '()])
-    (values (λ () (reverse slides))
-            (λ stuff (set! slides (cons (apply section stuff) slides))))))
+(define-values [get-sections register-section]
+  (let ([sections '()])
+    (values (λ () (reverse sections))
+            (λ (section) (set! sections (cons section sections))))))
+(define section-toplevel? (make-parameter #t))
+(define-syntax-rule (slide stuff ...)
+  (let ((toplevel? (section-toplevel?)))
+    (parameterize ([section-toplevel? #f])
+       (let ((section (section stuff ...)))
+         (if toplevel?
+             (register-section section)
+             section)))))
 
 ;; Quick helpers
 (define-syntax-rule (defcodes lang ...)
@@ -93,7 +103,6 @@ This document is available under the bugroff license.
      (spacing x)
      (div align: 'right valign: 'bottom style: (list "color:" fgcolor ";") text))))
 
-
 (define sad-slide  (bg-slide "Sad..." *red* *light-red*))
 (define rad-slide  (bg-slide "Better!" *blue* *light-blue*))
 (define krad-slide (bg-slide "Even better!" *green* *light-green*))
@@ -106,8 +115,7 @@ This document is available under the bugroff license.
           (Issue issue)
           (Story story)
           (Solution solution)
-          (tr (td) (td " "))
-          )))
+          (tr (td) (td " ")))))
 
 ;; TODO: write a match expander for runtime destructuring of arguments
 
@@ -117,9 +125,10 @@ This document is available under the bugroff license.
                    #:rad-story rad-story #:rad-solution rad-solution
                    #:krad-issue (krad-issue #f) #:krad-question (krad-question #f)
                    #:krad-story (krad-story #f) #:krad-solution (krad-solution #f))
-  (zad-slide sad-slide #:question sad-question #:issue sad-issue #:story sad-story #:solution sad-solution)
-  (zad-slide rad-slide #:question rad-question #:issue rad-issue #:story rad-story #:solution rad-solution)
-  (when krad-issue (zad-slide krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution)))
+  (list
+   (zad-slide sad-slide #:question sad-question #:issue sad-issue #:story sad-story #:solution sad-solution)
+   (zad-slide rad-slide #:question rad-question #:issue rad-issue #:story rad-story #:solution rad-solution)
+   (when krad-issue (zad-slide krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
 
 (x-slide
   @h1{Better Stories, Better Languages}
@@ -131,6 +140,7 @@ This document is available under the bugroff license.
   @url{http://github.com/fare/better-stories}
 )
 
+(slide ;; Intro: Stories
 (x-slide
  @h1{Stories}
  (table
@@ -194,10 +204,11 @@ I want to show you that the stories we tell *matter*.
 that they affect what we do, and the outcome of what we do.
 I want to show you that we do tell stories, even when we're not aware of them.
 I want to show you that some stories lead to better outcomes than others.
-})
+}))
 
+(slide ;; First Stories
 (x-slide
- @h1{This Talk}
+ @h1{Pairs of Stories}
  @L{Take a @bg-colorize[*light-red*]{sad so-o-ong},
             and make it @bg-colorize[*light-blue*]{be-e-etter}}
  @L{Let's start with a couple easy ones you already know...})
@@ -219,8 +230,9 @@ I want to show you that some stories lead to better outcomes than others.
  @L{Can we agree that the story usually @em{matters}?}
  @L{Slightly different stories lead to vastly different outcomes}
  @comment{
- })
+ }))
 
+(slide ;; Basic Stories: programs vs programming
 (xad-slide
  #:sad-question "Decompose programs?" ; (how to...)
  #:sad-issue "Software doesn't fit in one brainful"
@@ -241,8 +253,9 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-issue '("Do our best, compete with others") ;; learn from our and their successes and failures
  #:rad-story '("Experience through experiments" ;; experience as an output, rather than expertise as an input
                "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution '("Select from abundant market" "Learn in communities"))
+ #:rad-solution '("Select from abundant market" "Learn in communities")))
 
+(slide ;; Simple Programming Language Stories
 (xad-slide
  #:sad-question "Make a Device Programmable?" ; (how to...)
  #:sad-issue "Expose the device's features to a PL"
@@ -309,14 +322,15 @@ I want to show you that some stories lead to better outcomes than others.
 
 (xad-slide
  #:sad-question "Get a specialized language?" ; (how to...)
- #:sad-issue "SW involves heterogeneous activities"
+ #:sad-issue "Software involves heterogeneous activities"
  #:sad-story '("Each domain its experts" "Segregation of experts")
  #:sad-solution '("External DSLs" "Scripting languages")
  #:rad-question "Specialize conversation?"
- #:rad-issue "SW "
+ #:rad-issue "Express domain expertise"
  #:rad-story '("One brain, many topics" "Adapt PL to domain")
- #:rad-solution '("Internal DSLs" "Universal PL, many contexts"))
+ #:rad-solution '("Internal DSLs" "Universal PL, many contexts")))
 
+(slide
 (xad-slide
  #:sad-question "Get Programs Debugged?" ; (how to...)
  #:sad-issue "Programs have bugs, need be fixed"
@@ -334,7 +348,7 @@ I want to show you that some stories lead to better outcomes than others.
                 "Security by independent experts")
  #:sad-solution '("Forever patch leaks" "Low-level protection")
  #:rad-question "Build software securely?"
- #:rad-issue "Security is intrinsic to SW design"
+ #:rad-issue "Security is intrinsic to software design"
  #:rad-story '("Design with security from start" "Educate programmers")
  #:rad-solution '("Whole-system protocol design" "Capabilities"))
 
@@ -347,11 +361,12 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-issue "Make bad manipulations unexpressible"
  #:rad-story '("Error is normal, casual" "")
  #:rad-solution '("monotonic storage never loses data"
-                   "Infinite undo")) ;; system-provided default
+                   "Infinite undo"))) ;; system-provided default
 
+(slide
 (xad-slide
  #:sad-question "Document software interfaces?" ; (how to...)
- #:sad-issue "PL can't formalize SW intention"
+ #:sad-issue "PL can't formalize software intention"
  #:sad-story '("Document what can't be expressed" "PL as a given")
  #:sad-solution '("Informal contracts" "between heterogenous teams")
  #:rad-question "Agree on Responsibilities?"
@@ -404,8 +419,9 @@ I want to show you that some stories lead to better outcomes than others.
                 ;; why care when it's spilled from RAM to disk?
                 "Persistence by default") ;; Transients for performance
  #:rad-solution '("Orthogonal persistent"
-                   "Implicit support in PL"))
+                   "Implicit support in PL")))
 
+(slide
 (xad-slide
  #:sad-question "Model a changing world?" ; (how to...)
  #:sad-issue "Mutations happen — Object-Oriented"
@@ -424,7 +440,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:krad-story '("State is meta-level modularity"
                  "Mutable vs immutable views on code")
  #:krad-solution '("Differentiation and Integration"
-                    "Switch view to/from Monadic style"))
+                    "Switch view to/from Monadic style")))
 
 #;
 (xad-slide
@@ -437,6 +453,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-story '("" "")
  #:rad-solution '("" ""))
 
+(slide
 (slide
  @h1{The Grand Challenge}
  ~
@@ -456,7 +473,7 @@ I want to show you that some stories lead to better outcomes than others.
  ;; Desire control and look for solution hardwired in advance by experts who know better vs
  ;; Embrace change and let users express their needs in a safe space where bad situations are impossible by construction
  @L[class: 'fragment]{Sad Stories: bind good early}
- @L[class: 'fragment]{Better Stories: ban bad early})
+ @L[class: 'fragment]{Better Stories: ban bad early}))
 
 #| Submission to LambdaConf 2017:
 
@@ -517,8 +534,6 @@ The session is not related to statically-typed, category-theoretic families (Has
 N/A
 |#
 
-
-
 (output-xml
  @html{
    @head{
@@ -529,7 +544,7 @@ N/A
      @link[rel: 'stylesheet href: "resources/my.css"]
    }
    @body{
-     @div[class: 'reveal]{@div[class: 'slides]{@get-slides}}
+     @div[class: 'reveal]{@div[class: 'slides]{@get-sections}}
      @script[src: @reveal-url{lib/js/head.min.js}]
      @script[src: @reveal-url{js/reveal.min.js}]
      @script/inline{
