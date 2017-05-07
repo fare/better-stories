@@ -189,14 +189,17 @@ I am not going to discuss those stories today.
 @slide{
  @h1{Programming Stories}
  @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg"]
+ @small{See also my SDR2017 talk
+        @a[href: "https://github.com/fare/evo2017"]{@q{From Software Creationism to Software Evolutionism}}}
 @comment{
   Today I want to discuss stories specifically about programming.
 }}
 
 (x-slide
  @h1{The Take Home Points}
- @L{Software tools imply a story} @comment{Fourier Transform between software and stories}
- @L{New stories can help invent new tools}
+ @L{Stories @em{matter}}
+ @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
+ @L{New|better stories to invent new|better tools}
  @L{Explicit stories are a great meta-tool...}
  @comment{
 I want to show you that the stories we tell *matter*.
@@ -226,21 +229,22 @@ I want to show you that some stories lead to better outcomes than others.
 (x-slide
  @h1{@q{I disagree!}}
  @L{It's OK to be wrong (for you, for me)}
- @L{Maybe one story isn't @em{always} better}
- @L{Can we agree that the story usually @em{matters}?}
- @L{Slightly different stories lead to vastly different outcomes}
+ @L{@em{Maybe} one story isn't @em{always} better}
+ @L{But can we agree that stories usually @em{matter}?}
+ @L{Slightly different stories → vastly different outcomes}
  @comment{
  }))
 
-(slide ;; Basic Stories: programs vs programming
+(slide
+(slide @h1{Simple Programming Stories})
 (xad-slide
  #:sad-question "Decompose programs?" ; (how to...)
  #:sad-issue "Software doesn't fit in one brainful"
- #:sad-story '("Hierarchical design into components" "by fully informed designer")
+ #:sad-story '("Hierarchical design into components" "… by fully informed designer")
  #:sad-solution '("Top-down management" "UML diagrams")
  #:rad-question "Decompose programming?"
  #:rad-issue "Many programmers must cooperate"
- #:rad-story '("Partially informed programmers" "Growing a network of projects")
+ #:rad-story '("Each brings partial information" "Growing a network of projects")
  #:rad-solution '("Software distributions" "Distributed version control"))
 
 (xad-slide
@@ -250,39 +254,40 @@ I want to show you that some stories lead to better outcomes than others.
                "Restrict each component to best experts")
  #:sad-solution '("Standards" "Segregation by expertise") ;; Conway's Law
  #:rad-question "Foster better programming?"
- #:rad-issue '("Do our best, compete with others") ;; learn from our and their successes and failures
- #:rad-story '("Experience through experiments" ;; experience as an output, rather than expertise as an input
+ #:rad-issue '("Be better selves, be better rivals") ;; learn from our and their successes and failures
+ #:rad-story '("Learn from experience (others', or yours)" ;; experience as an output, rather than expertise as an input
                "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution '("Select from abundant market" "Learn in communities")))
+ #:rad-solution '("Learn in communities" "Select from competitive market")))
 
-(slide ;; Simple Programming Language Stories
+(slide
+(x-slide @h1{Programming Language Stories})
 (xad-slide
  #:sad-question "Make a Device Programmable?" ; (how to...)
  #:sad-issue "Expose the device's features to a PL"
  #:sad-story '("PLs are for machines")
  #:sad-solution '("Match PL features to device capabilities"
-                  "Otherwise random Turing tar pit")
+                  "Turing tar pit")
  #:rad-question "Express programming ideas?"
  #:rad-issue "Convey all meanings of the humans"
  #:rad-story '("PLs are for humans")
  #:rad-solution '("Match PL structure to human cognition" ;; and social processes
-                  "Simpler programming languages"))
+                  "Simpler programming languages")) ;; intrinsic vs incidental complexity
 
 (xad-slide
  #:sad-question "Handle repetitive programs?" ; (how to...)
  #:sad-issue "Lots of repetition in programs"
- #:sad-story '("Programmer as grunt worker" "Language as a given")
- #:sad-solution '("Theorize repetitions as Design Patterns" "More programmers, more drudge") ;; manually enforce consistency
- #:rad-question "Remove programming drudge?"
- #:rad-issue "Drudge in programming" ;; "I object to doing things that computers can do." — Olin Shivers
- #:rad-story '("Programmer as abstract thinker" "Language as a platform")
+ #:sad-story '("Language as a given" "Programmer as grunt worker")
+ #:sad-solution '("Theorize repetitions as Design Patterns" "More programmers repeating, under orders") ;; manually enforce consistency
+ #:rad-question "Remove programming drudgery?"
+ #:rad-issue "Drudgery in programming" ;; "I object to doing things that computers can do." — Olin Shivers
+ #:rad-story '("Language as an evolving platform" "Programmer as abstract thinker")
  #:rad-solution '("Metaprograms" "PL extensibility (macros…)")) ;; Turing's theorem is based on metaprograms!
 
 (xad-slide
  #:sad-question "Have an extensible syntax?" ; (how to...)
  #:sad-issue "Hooks into existing syntax" ;; assuming we want extensibility
  #:sad-story '("Side-effect the One True Syntax" "") ;; as in Common Lisp
- #:sad-solution '("Bind symbols to macros" "Dynamic readtable")
+ #:sad-solution '("Global macros" "Global readtable")
  #:rad-question "Explore useful syntaxes?"
  #:rad-issue "Best express each program fragment"
  #:rad-story '("Exploration of many syntaxes" "")
@@ -331,6 +336,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("Internal DSLs" "Universal PL, many contexts")))
 
 (slide
+(x-slide @h1{Programming Quality Stories})
 (xad-slide
  #:sad-question "Get Programs Debugged?" ; (how to...)
  #:sad-issue "Programs have bugs, need be fixed"
@@ -364,6 +370,7 @@ I want to show you that some stories lead to better outcomes than others.
                    "Infinite undo"))) ;; system-provided default
 
 (slide
+(x-slide @h1{More Programming Stories})
 (xad-slide
  #:sad-question "Document software interfaces?" ; (how to...)
  #:sad-issue "PL can't formalize software intention"
@@ -422,6 +429,7 @@ I want to show you that some stories lead to better outcomes than others.
                    "Implicit support in PL")))
 
 (slide
+(x-slide @h1{Stories about change})
 (xad-slide
  #:sad-question "Model a changing world?" ; (how to...)
  #:sad-issue "Mutations happen — Object-Oriented"
@@ -460,20 +468,32 @@ I want to show you that some stories lead to better outcomes than others.
  @L{None of these Stories is revolutionary} ;; From The Mother of All Demos...
  @L{Each has been foretold in past systems} ;; Implemented, though not always optimized and productized
  ~
- @L[class: 'fragment]{But no @em{system} embodies them all at once} ;; Opportunity!
- @L[class: 'fragment]{Missing: @em{vision}, not technical ability})
+ (div class: 'fragment
+  @L{But no @em{system} embodies them all at once} ;; Opportunity!
+  @L{Missing: @em{vision}, not technical ability}))
+
+(x-slide
+ @h1{The Take Home Points (redux)}
+ @L{Stories @em{matter}}
+ @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
+ @L{New|better stories to invent new|better tools}
+ @L{Explicit stories are a great meta-tool...})
 
 (slide
  @h1{The Meta-Story}
  ~
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
- @L[class: 'fragment]{Sad Stories: about Things Created}
- @L[class: 'fragment]{Better Stories: about People Creating} ~
+ (div class: 'fragment
+  @L{Sad Stories: about Programs, Things Created}
+  @L{Better Stories: about Programming, People Creating}) ~
  ;; Desire control and look for solution hardwired in advance by experts who know better vs
  ;; Embrace change and let users express their needs in a safe space where bad situations are impossible by construction
- @L[class: 'fragment]{Sad Stories: bind good early}
- @L[class: 'fragment]{Better Stories: ban bad early}))
+ (div class: 'fragment
+  @L{Sad Stories: bind good early} ;; choose the solution at the time people know least
+  @L{Better Stories: ban bad early}) ;; make the issues inexpressible, create a safe space of freedom
+ @comment{Any question?}))
+
 
 #| Submission to LambdaConf 2017:
 
