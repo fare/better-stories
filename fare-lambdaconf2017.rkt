@@ -110,9 +110,12 @@ This document is available under the bugroff license.
 (define td-width "48%")
 (define table-width "114%")
 
+(define (th* name)
+  (if name (th width: th-width (font size: "5" (color name #:fg *white*))) (td)))
+
 (define (row name left right #:left-bg (left-bg #f) #:right-bg (right-bg #f))
   (tr
-   (if name (th width: th-width (font size: "5" (color name #:fg *white*))) (td))
+   (th* name)
    (td
     width: td-width (when left-bg bgcolor:) (when left-bg left-bg)
     (spacing left))
@@ -540,7 +543,7 @@ I want to show you that some stories lead to better outcomes than others.
    (th width: td-width bgcolor: *light-red* @font[size: 5]{Sad Stories})
    (th width: td-width bgcolor: *light-blue* @font[size: 5]{Better Stories}))
   (tr
-   (th @font[size: 5]{Topic})
+   (th* "Topic")
    (td
     class: 'fragment data-fragment-index: 1 bgcolor: *light-red*
     (spacing '("About Programs" "Things Created")))
@@ -548,7 +551,7 @@ I want to show you that some stories lead to better outcomes than others.
     class: 'fragment data-fragment-index: 1 bgcolor: *light-blue*
     (spacing '("About Programming" "People Creating"))))
   (tr
-   (th width: th-width @font[size: 5]{Choice})
+   (th* "Choice")
    (td
     class: 'fragment data-fragment-index: 2 bgcolor: *light-red*
     (spacing (list (span class: 'fragment data-fragment-index: 2 "Bind Good Early")
