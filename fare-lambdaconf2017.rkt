@@ -1,6 +1,7 @@
 #lang at-exp racket @; -*- Scheme -*-
 #|
-Better Stories, Better Languages - 10' presentation at LambdaConf 2017-05-xx
+Better Stories, Better Languages
+10 minute presentation at LambdaConf 2017-05-xx
 
 To compile it, use:
   racket fare-lambdaconf2017.rkt > fare-lambdaconf2017.html
@@ -10,7 +11,6 @@ This document is based on a previous talk:
 
 This document is available under the bugroff license.
   http://www.oocities.org/soho/cafe/5947/bugroff.html
-
 |#
 
 (require
@@ -22,6 +22,8 @@ This document is available under the bugroff license.
 
 ;; Reveal and new html stuff
 (define/provide-elements/not-empty section video) ; more tags here
+
+;; Register sections (but only at the top-level)
 (define-values [get-sections register-section]
   (let ([sections '()])
     (values (λ () (reverse sections))
@@ -34,6 +36,9 @@ This document is available under the bugroff license.
          (if toplevel?
              (register-section section)
              section)))))
+(define (reveal-url . text)
+  ;; (cons "http://cdn.jsdelivr.net/reveal.js/3.0.0/" text)
+  (cons "resources/reveal/" text))
 
 ;; Quick helpers
 (define-syntax-rule (defcodes lang ...)
@@ -51,10 +56,6 @@ This document is available under the bugroff license.
       (close-output-port out))
     file))
 
-(define (reveal-url . text)
-  ;; (cons "http://cdn.jsdelivr.net/reveal.js/3.0.0/" text)
-  (cons "resources/reveal/" text))
-
 (define (L . x) (apply div align: 'left x))
 (define (t . x) x)
 (define (C . x) (apply div align: 'center x))
@@ -66,6 +67,7 @@ This document is available under the bugroff license.
 (define (image name url . size)
   (img src: (pic-url name url) alt: name height: (if (empty? size) "75%" size)))
 
+(define *white* "#ffffff")
 (define *blue* "#0000ff")
 (define *light-blue* "#b4b4ff")
 (define *red* "#ff0000")
@@ -90,13 +92,6 @@ This document is available under the bugroff license.
       (cdr (spacing* (filter-not null? l)))
       l))
 
-(define (aa x) (λ (y) (tr (th x) (td border: 'below (spacing y)))))
-(define Question (aa "Question"))
-(define Issue (aa "Issue"))
-(define Story (aa "Story"))
-(define Solution (aa "Tools")) ;; Solution
-;;(define Tools (aa "Tools"))
-
 (define (color text #:fg (fgcolor #f) #:bg (bgcolor #f))
   (span style: (list (if fgcolor (list "color:" fgcolor ";") '())
                      (if bgcolor (list "background-color:" bgcolor ";") '()))
@@ -109,57 +104,47 @@ This document is available under the bugroff license.
      (spacing x)
      (div align: 'right valign: 'bottom (color #:fg fgcolor text)))))
 
-(define sad-slide  (bg-slide "Sad..." *red* *light-red*))
-(define rad-slide  (bg-slide "Better!" *blue* *light-blue*))
-;;(define krad-slide (bg-slide "Even better!" *green* *light-green*))
 (define (x-slide . x) (slide (spacing x)))
 
 (define th-width "4%")
 (define td-width "48%")
 (define table-width "114%")
 
+(define (row name left right #:left-bg (left-bg #f) #:right-bg (right-bg #f))
+  (tr
+   (if name (th width: th-width (font size: "5" (color name #:fg *white*))) (td))
+   (td
+    width: td-width (when left-bg bgcolor:) (when left-bg left-bg)
+    (spacing left))
+   (if right
+       (td
+        class: 'fragment data-fragment-index: 1
+        width: td-width bgcolor: right-bg
+        (spacing right))
+       (td width: td-width))))
+
 (define (krad-slide #:question question #:issue issue #:story story #:solution solution)
-  (define (row name krad)
-    (tr
-     (if name (th width: th-width (font size: "5" name)) (td))
-     (td
-      width: td-width bgcolor: *light-green*
-      (spacing krad))
-     (td width: td-width)))
   (slide
    (table
     align: 'right width: table-width
-    (row "Question" question)
-    (row "Issue" issue)
-    (row "Story" story)
-    (row "Tools" solution)
-    (row #f (div align: 'right (color "Even Better!" #:fg *green*))))))
+    (map (λ (name text) (row name text #f #:left-bg *light-green*))
+         '("Question" "Issue" "Story" "Tools" #f)
+         (list question issue story solution
+               (div align: 'right (color "Even Better!" #:fg *green*)))))))
 
 (define (srad-slide #:sad-issue sad-issue #:sad-question sad-question
                     #:sad-story sad-story #:sad-solution sad-solution
                     #:rad-issue rad-issue #:rad-question rad-question
                     #:rad-story rad-story #:rad-solution rad-solution)
-  (define (row name sad rad)
-    (tr
-     (if name (th width: th-width (font size: "5" name)) (td))
-     (td
-      width: td-width bgcolor: *light-red*
-      (spacing sad))
-     (td
-      class: 'fragment data-fragment-index: 1
-      width: td-width bgcolor: *light-blue*
-      (spacing rad))))
   (slide
    (table
     align: 'right width: table-width
-    (row "Question" sad-question rad-question)
-    (row "Issue" sad-issue rad-issue)
-    (row "Story" sad-story rad-story)
-    (row "Tools" sad-solution rad-solution)
-    (row #f (div align: 'right (color "Sad..." #:fg *red*))
-         (div align: 'right (color "Better!" #:fg *blue*))))))
-
-;; TODO: write a match expander for runtime destructuring of arguments
+    (map (λ (name sad rad) (row name sad rad #:left-bg *light-red* #:right-bg *light-blue*))
+         '("Question" "Issue" "Story" "Tools" #f)
+         (list sad-question sad-issue sad-story sad-solution
+               (div align: 'right (color "Sad..." #:fg *red*)))
+         (list rad-question rad-issue rad-story rad-solution
+               (div align: 'right (color "Better!" #:fg *blue*)))))))
 
 (define (xad-slide
          #:sad-issue sad-issue #:sad-question sad-question
@@ -176,14 +161,17 @@ This document is available under the bugroff license.
    (when krad-issue
      (krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
 
-(x-slide
-  @h1{Better Stories, Better Languages}
-  @CB{What Would Alyssa P. Hacker Do?}
-  @p{}
-  @p{François-René Rideau, @em{TUNES Project}}
-  @p{}
-  @p{LambdaConf 2017, 2017-05-xx}
-  @url{http://github.com/fare/better-stories}
+(slide
+ @h1{Better Stories, Better Languages}
+ ~
+ @CB{What Would Alyssa P. Hacker Do?}
+ ~
+ ~
+ @p{François-René Rideau, @em{TUNES Project}}
+ ~
+ ~
+ @p{LambdaConf 2017, 2017-05-xx}
+ @url{http://github.com/fare/better-stories}
 )
 
 (slide ;; Intro: Stories
@@ -225,7 +213,7 @@ And not just the world, but our role in the world.
            ("Horror Hidden at Home" "heartbleed.jpg" "https://www.eff.org/files/2014/04/10/heartbleed-01-sm_0.jpg" "66%"))))
     (table
      (tr (map (λ (x) (td valign: 'top (apply image (rest x)))) theme-pic))
-     (tr (map (λ (x) (td width: "25%" (font color: "white" (first x)))) theme-pic))))
+     (tr (map (λ (x) (td width: "25%" (font color: *white* (first x)))) theme-pic))))
   @comment{
 There are many common stories so general that they can apply in any kind human situation.
 
@@ -548,11 +536,11 @@ I want to show you that some stories lead to better outcomes than others.
  (table
   align: 'right width: table-width
   (tr
-   (td)
-   (th bgcolor: *light-red* @font[size: 5]{Sad Stories})
-   (th bgcolor: *light-blue* @font[size: 5]{Better Stories}))
+   (td width: th-width)
+   (th width: td-width bgcolor: *light-red* @font[size: 5]{Sad Stories})
+   (th width: td-width bgcolor: *light-blue* @font[size: 5]{Better Stories}))
   (tr
-   (th width: th-width @font[size: 5]{Topic})
+   (th @font[size: 5]{Topic})
    (td
     class: 'fragment data-fragment-index: 1 bgcolor: *light-red*
     (spacing '("About Programs" "Things Created")))
@@ -563,10 +551,12 @@ I want to show you that some stories lead to better outcomes than others.
    (th width: th-width @font[size: 5]{Choice})
    (td
     class: 'fragment data-fragment-index: 2 bgcolor: *light-red*
-    (spacing '("Bind Good Early" "Impose Ignorance")))
+    (spacing (list (span class: 'fragment data-fragment-index: 2 "Bind Good Early")
+                   (span class: 'fragment data-fragment-index: 3 "Impose Ignorance"))))
    (td
     class: 'fragment data-fragment-index: 2 bgcolor: *light-blue*
-    (spacing '("Ban Bad Early" "Create Freedom")))))
+    (spacing (list (span class: 'fragment data-fragment-index: 2 "Ban Bad Early")
+                   (span class: 'fragment data-fragment-index: 3 "Create Freedom"))))))
  @comment{Any question?}))
 
 
