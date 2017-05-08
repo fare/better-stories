@@ -111,42 +111,57 @@ This document is available under the bugroff license.
 
 (define sad-slide  (bg-slide "Sad..." *red* *light-red*))
 (define rad-slide  (bg-slide "Better!" *blue* *light-blue*))
-(define krad-slide (bg-slide "Even better!" *green* *light-green*))
+;;(define krad-slide (bg-slide "Even better!" *green* *light-green*))
 (define (x-slide . x) (slide (spacing x)))
 
-(define (zad-slide slide #:question question #:issue issue #:story story #:solution solution)
-  (slide ;;(h1 question)
-         (table
-          frame: 'below
-          (Question question)
-          (Issue issue)
-          (Story story)
-          (Solution solution)
-          (tr (td) (td " ")))))
+(define th-width "4%")
+(define td-width "48%")
+(define table-width "114%")
+
+(define (krad-slide #:question question #:issue issue #:story story #:solution solution)
+  (define (row name krad)
+    (tr
+     (if name (th width: th-width (font size: "5" name)) (td))
+     (td
+      width: td-width bgcolor: *light-green*
+      (spacing krad))
+     (td width: td-width)))
+  (slide
+   (table
+    align: 'right width: table-width
+    (row "Question" question)
+    (row "Issue" issue)
+    (row "Story" story)
+    (row "Tools" solution)
+    (row #f (div align: 'right (color "Even Better!" #:fg *green*))))))
 
 (define (srad-slide #:sad-issue sad-issue #:sad-question sad-question
                     #:sad-story sad-story #:sad-solution sad-solution
                     #:rad-issue rad-issue #:rad-question rad-question
                     #:rad-story rad-story #:rad-solution rad-solution)
   (define (row name sad rad)
-    (tr ;; (th width: "4%" name)
-        (td width: "50%" bgcolor: *light-red* (spacing sad))
-        (td width: "50%" bgcolor: *light-blue* (spacing rad))))
-  (slide (table width: "100%" align: 'center
-          frame: 'below
-          (row "Question" sad-question rad-question)
-          (row "Issue" sad-issue rad-issue)
-          (row "Story" sad-story rad-story)
-          (row "Tools" sad-solution rad-solution)
-          (tr (td align: 'right bgcolor: *light-red*
-                  (div align: 'right (color "Sad..." #:fg *red*)))
-              (td align: 'right bgcolor: *light-blue*
-                  (div align: 'right (color "Better!" #:fg *blue*)))))))
+    (tr
+     (if name (th width: th-width (font size: "5" name)) (td))
+     (td
+      width: td-width bgcolor: *light-red*
+      (spacing sad))
+     (td
+      class: 'fragment data-fragment-index: 1
+      width: td-width bgcolor: *light-blue*
+      (spacing rad))))
+  (slide
+   (table
+    align: 'right width: table-width
+    (row "Question" sad-question rad-question)
+    (row "Issue" sad-issue rad-issue)
+    (row "Story" sad-story rad-story)
+    (row "Tools" sad-solution rad-solution)
+    (row #f (div align: 'right (color "Sad..." #:fg *red*))
+         (div align: 'right (color "Better!" #:fg *blue*))))))
 
 ;; TODO: write a match expander for runtime destructuring of arguments
 
 (define (xad-slide
-         #:separate? (separate? #f) #:side-by-side? (side-by-side? #t)
          #:sad-issue sad-issue #:sad-question sad-question
          #:sad-story sad-story #:sad-solution sad-solution
          #:rad-issue rad-issue #:rad-question rad-question
@@ -154,17 +169,12 @@ This document is available under the bugroff license.
          #:krad-issue (krad-issue #f) #:krad-question (krad-question #f)
          #:krad-story (krad-story #f) #:krad-solution (krad-solution #f))
   (list
-   (when separate?
-     (list
-      (zad-slide sad-slide #:question sad-question #:issue sad-issue #:story sad-story #:solution sad-solution)
-      (zad-slide rad-slide #:question rad-question #:issue rad-issue #:story rad-story #:solution rad-solution)))
-   (when side-by-side?
-     (srad-slide #:sad-issue sad-issue #:sad-question sad-question
-                 #:sad-story sad-story #:sad-solution sad-solution
-                 #:rad-issue rad-issue #:rad-question rad-question
-                 #:rad-story rad-story #:rad-solution rad-solution))
+   (srad-slide #:sad-issue sad-issue #:sad-question sad-question
+               #:sad-story sad-story #:sad-solution sad-solution
+               #:rad-issue rad-issue #:rad-question rad-question
+               #:rad-story rad-story #:rad-solution rad-solution)
    (when krad-issue
-     (zad-slide krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
+     (krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
 
 (x-slide
   @h1{Better Stories, Better Languages}
@@ -224,7 +234,7 @@ I am not going to discuss those stories today.
 
 @slide{
  @h1{Programming Stories}
- @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg"]
+ @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "70%"]
  @small{See also my SDR2017 talk
         @a[href: "https://github.com/fare/evo2017"]{@q{From Software Creationism to Software Evolutionism}}}
 @comment{
@@ -253,7 +263,6 @@ I want to show you that some stories lead to better outcomes than others.
  @L{Let's start with a couple easy ones you already know...})
 
 (xad-slide
- #:separate? #t #:side-by-side? #t
  #:sad-question "How to fund software?"
  #:sad-issue "Software costly to produce"
  #:sad-story '("own & sell scarce software " "vendors & customers") ;; (static)
@@ -496,10 +505,10 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("Functional Programming" ;; Purity by default, at base-level, at meta-level, too... Unlambda!
                   "Monads, extensible effects") ;; Problem: too much or too little
  #:krad-question "Discuss relevant change?"
- #:krad-issue "Record and Process Change Events"
+ #:krad-issue "Record and Process Events"
  #:krad-story (list "First-class Change-Oriented"
-                    @list{Mutable vs immutable @em{views} on code})
- #:krad-solution '("Differentiate state, Integrate changes"
+                    @list{Mutable vs immutable @em{views}})
+ #:krad-solution '("Differentiate, Integrate"
                    "Switch view to/from FP")))
 
 #;
@@ -522,7 +531,7 @@ I want to show you that some stories lead to better outcomes than others.
  ~
  (div class: 'fragment
   @L{But no @em{system} embodies them all at once} ;; Opportunity!
-  @L{Missing: @em{vision}, not technical ability}))
+  @L{Missing: not technical ability, but @em{vision}}))
 
 (x-slide
  @h1{The Take Home Points (redux)}
@@ -536,14 +545,28 @@ I want to show you that some stories lead to better outcomes than others.
  ~
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
- (div class: 'fragment
-  @L{Sad Stories: about Programs, Things Created}
-  @L{Better Stories: about Programming, People Creating}) ~
- ;; Desire control and look for solution hardwired in advance by experts who know better vs
- ;; Embrace change and let users express their needs in a safe space where bad situations are impossible by construction
- (div class: 'fragment
-  @L{Sad Stories: bind good early, impose ignorance} ;; choose the solution at the time people know least
-  @L{Better Stories: ban bad early, create freedom}) ;; make the issues inexpressible, create a safe space of freedom
+ (table
+  align: 'right width: table-width
+  (tr
+   (td)
+   (th bgcolor: *light-red* @font[size: 5]{Sad Stories})
+   (th bgcolor: *light-blue* @font[size: 5]{Better Stories}))
+  (tr
+   (th width: th-width @font[size: 5]{Topic})
+   (td
+    class: 'fragment data-fragment-index: 1 bgcolor: *light-red*
+    (spacing '("About Programs" "Things Created")))
+   (td
+    class: 'fragment data-fragment-index: 1 bgcolor: *light-blue*
+    (spacing '("About Programming" "People Creating"))))
+  (tr
+   (th width: th-width @font[size: 5]{Choice})
+   (td
+    class: 'fragment data-fragment-index: 2 bgcolor: *light-red*
+    (spacing '("Bind Good Early" "Impose Ignorance")))
+   (td
+    class: 'fragment data-fragment-index: 2 bgcolor: *light-blue*
+    (spacing '("Ban Bad Early" "Create Freedom")))))
  @comment{Any question?}))
 
 
