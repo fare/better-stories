@@ -166,8 +166,8 @@ This document is available under the bugroff license.
 
 (slide
  @h1{Better Stories, Better Languages}
- ~
  @CB{What Would Alyssa P. Hacker Do?}
+ ~
  ~
  ~
  @p{François-René Rideau, @em{TUNES Project}}
@@ -182,8 +182,9 @@ This document is available under the bugroff license.
  @h1{Stories}
  (table
   (tr
-   (td (image "gone-with-the-wind.jpg" "http://static.rogerebert.com/uploads/movie/movie_poster/gone-with-the-wind-1939/large_lqPnvmaX4oZY9teAOT7M0txCLkS.jpg" "40%"))
+   ;;(td (image "gone-with-the-wind.jpg" "http://static.rogerebert.com/uploads/movie/movie_poster/gone-with-the-wind-1939/large_lqPnvmaX4oZY9teAOT7M0txCLkS.jpg" "40%"))
    (td (image "tosca.jpg" "https://s-media-cache-ak0.pinimg.com/originals/d4/cf/34/d4cf34cdac1191dcb38a0a1a61a0069b.jpg" "28%"))
+   (td (image "transmetropolitan-one-more-time.jpg" "http://megasad.com/old/comics/covers/large/transmetropolitan-collection10.jpg" "20%"))
    (td (image "1984.jpg" "https://yifymovie.re/images/bposter/1984-1984-movie-poster.jpg" "50%"))
    (td (image "real-genius.jpg" "https://i.jeded.com/i/real-genius.16835.jpg" "24%")))
   (tr
