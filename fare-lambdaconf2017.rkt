@@ -77,8 +77,6 @@ This document is available under the bugroff license.
 
 (define ~ @p{ })
 
-(define (bg-colorize color text) (span style: (list "background-color:" color ";") text))
-
 (define (spacing* l (space (br)))
   (cond
     ((null? l) (list space))
@@ -93,9 +91,11 @@ This document is available under the bugroff license.
       l))
 
 (define (color text #:fg (fgcolor #f) #:bg (bgcolor #f))
-  (span style: (list (if fgcolor (list "color:" fgcolor ";") '())
+  (if (or fgcolor bgcolor)
+      (span style: (list (if fgcolor (list "color:" fgcolor ";") '())
                      (if bgcolor (list "background-color:" bgcolor ";") '()))
-        text))
+            text)
+      text))
 
 (define (bg-slide text fgcolor bgcolor)
   (λ x
@@ -226,9 +226,10 @@ I am not going to discuss those stories today.
 
 @slide{
  @h1{Programming Stories}
- @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "70%"]
- @small{See also my SDR2017 talk
-        @a[href: "https://github.com/fare/evo2017"]{@q{From Software Creationism to Software Evolutionism}}}
+    @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "50%"]
+ @p{e.g. How does Software come into existence?}
+ @p{@small{See my SDR2017 talk
+        @a[href: "https://github.com/fare/evo2017"]{@q{From Software Creationism to Software Evolutionism}}}}
 @comment{
   Today I want to discuss stories specifically about programming.
 }}
@@ -250,25 +251,28 @@ I want to show you that some stories lead to better outcomes than others.
 (slide ;; First Stories
 (x-slide
  @h1{Pairs of Stories}
- @L{Take a @bg-colorize[*light-red*]{sad so-o-ong},
-            and make it @bg-colorize[*light-blue*]{be-e-etter}}
- @L{Let's start with a couple easy ones you already know...})
+ @L{Take a @color[#:bg *light-red*]{sad so-o-ong},
+            and make it @color[#:bg *light-blue*]{be-e-etter}}
+ ;;@L{Let's start with a couple easy ones you already know...}
+ )
 
 (xad-slide
- #:sad-question "How to fund software?"
+ #:sad-question "How to fund programs?"
  #:sad-issue "Software costly to produce"
- #:sad-story '("own & sell scarce software " "vendors & customers") ;; (static)
+ #:sad-story '("software scarce: own&sell it" "vendors & customers") ;; (static)
  #:sad-solution '("Proprietary Software" "Closed binaries") ;; unmaintainable by anyone but the vendor, if interested
  #:rad-question "How to fund programming?"
  #:rad-issue "Starved coders don't code"
- #:rad-story '("own & sell scarce labor" "contributors & users") ;; (dynamic)
+ #:rad-story '("labor is scarce: own&sell it" "contributors & users") ;; (dynamic)
  #:rad-solution '("Free Software" "Open Source")) ;; shaped into maintainability by shared maintenance
 
-(x-slide
+(slide
  @h1{@q{I disagree!}}
+ ~
  @L{It's OK to be wrong (for you, for me)}
  @L{@em{Maybe} one story isn't @em{always} better}
- @L{But can we agree that stories usually @em{matter}?}
+ ~
+ @L{Can we agree that stories @em{matter} though?}
  @L{Slightly different stories → vastly different outcomes}
  @comment{
  }))
@@ -295,10 +299,10 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-issue '("Improving ourselves is hard") ;; learn from our and their successes and failures
  #:rad-story '("Learn from experience" ;; other people's, or your own; experience as an output, rather than expertise as an input
                "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution '("Communities" "Competition in markets")))
+ #:rad-solution '("Communities" "Competition in open markets")))
 
 (slide
-(x-slide @h1{Programming Language Stories})
+(x-slide @h1{Stories about Programming Languages})
 (xad-slide
  #:sad-question "Make device programmable" ; (how to...)
  #:sad-issue "Expose device features"
@@ -309,12 +313,12 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-issue "Convey human meanings"
  #:rad-story '("PLs are for humans")
  #:rad-solution '("match human cognition" ;; and social processes
-                  "minimize complexity")) ;; intrinsic vs incidental complexity
+                  "minimize cognitive load")) ;; intrinsic vs incidental complexity
 
 (xad-slide
  #:sad-question "Handle repetitive code" ; (how to...)
  #:sad-issue "Lots of repetition in code"
- #:sad-story '("Language as given" "Programmer as drudge")
+ #:sad-story '("Language as given" "Programmer as worker")
  #:sad-solution '("Informal Design Patterns" "Plan more drudgery") ;; manually enforce consistency
  #:rad-question "Remove coding drudgery"
  #:rad-issue "Drudgery in programming" ;; "I object to doing things that computers can do." — Olin Shivers
@@ -374,7 +378,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("Internal DSLs" "Contexts of universal PL")))
 
 (slide
-(x-slide @h1{Programming Quality Stories})
+(x-slide @h1{Stories about Programming Quality})
 (xad-slide
  #:sad-question "Get Programs Debugged" ; (how to...)
  #:sad-issue "Program bugs need fixed"
@@ -389,11 +393,11 @@ I want to show you that some stories lead to better outcomes than others.
  #:sad-question "Secure existing software?" ; (how to...)
  #:sad-issue "Security its own expertise"
  #:sad-story '("Security as afterthought"
-               "Independent Sec. experts")
+               "Independent Sec Experts")
  #:sad-solution '("Forever patch leaks" "Low-level protection")
  #:rad-question "Build software securely?"
  #:rad-issue "Security as aspect of Design"
- #:rad-story '("Sec part and parcel of P" "Programmer education")
+ #:rad-story '("Sec integral to P'ing" "Programmer education")
  #:rad-solution '("Whole-system design" "High-level capabilities"))
 
 (xad-slide
@@ -404,7 +408,7 @@ I want to show you that some stories lead to better outcomes than others.
                       @list{Expensive ad hoc "Undo"}) ;; programmer-intensive add-ons
  #:rad-question "Eliminating catastrophes?"
  #:rad-issue "Bad manip. unexpressible"
- #:rad-story '("Everyday trivial failures")
+ #:rad-story '("Failures everyday, trivial")
  #:rad-solution '("Monotonic storage"
                   "Universal infinite undo"))) ;; system-provided default
 
@@ -482,7 +486,7 @@ I want to show you that some stories lead to better outcomes than others.
                   "Implicit support in PL")))
 
 (slide
-(x-slide @h1{Stories about change})
+(x-slide @h1{Stories about Change})
 (xad-slide
  #:sad-question "Model a changing world?" ; (how to...)
  #:sad-issue "Mutations happen"
@@ -561,7 +565,12 @@ I want to show you that some stories lead to better outcomes than others.
     class: 'fragment data-fragment-index: 2 bgcolor: *light-blue*
     (spacing (list (span class: 'fragment data-fragment-index: 2 "Ban Bad Early")
                    (span class: 'fragment data-fragment-index: 3 "Create Freedom"))))))
- @comment{Any question?}))
+ ;; Vicious circle of sad stories / Vertuous circle of better stories
+ ;; Story imposed on you / you choose the story
+ ~
+ @p[class: 'fragment]{Any question?}))
+
+ ;; Frame of mind: "white" "white" "white" ... "what do cows drink?"
 
 
 #| Submission to LambdaConf 2017:

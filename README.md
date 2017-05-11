@@ -18,7 +18,7 @@ an improvement over proprietary software without qualification:
 Viewing the presentation
 ------------------------
 
-Open the file [fare-lambdaconf2017.html](http://htmlpreview.github.com/?https://github.com/fare/better-stories/blob/master/fare-lambdaconf2017.html)
+Open the file [fare-lambdaconf2017.html](https://htmlpreview.github.com/?https://github.com/fare/better-stories/blob/master/fare-lambdaconf2017.html)
 
 
 Viewing the article
