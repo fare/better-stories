@@ -7,3 +7,10 @@ table, th, td {
 html {
   background-color: #fff !important;
 }
+
+.reveal {
+  font-family: 'Source Sans Pro', Helvetica, sans-serif;
+  font-size: 33px;
+  font-weight: normal;
+  color: #fff;
+}

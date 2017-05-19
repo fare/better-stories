@@ -1,6 +1,6 @@
 #lang at-exp racket @; -*- Scheme -*-
 #|
-Better Stories, Better Languages
+Better Stories, Better Software
 10 minute presentation at LambdaConf 2017-05-xx
 
 To compile it, use:
@@ -11,6 +11,10 @@ This document is based on a previous talk:
 
 This document is available under the bugroff license.
   http://www.oocities.org/soho/cafe/5947/bugroff.html
+
+TODO: repeat chapter title at top of slide
+TODO: make <th> tags bigger
+
 |#
 
 (require
@@ -29,13 +33,28 @@ This document is available under the bugroff license.
     (values (λ () (reverse sections))
             (λ (section) (set! sections (cons section sections))))))
 (define section-toplevel? (make-parameter #t))
-(define-syntax-rule (slide stuff ...)
+(define-syntax-rule (slide stuff ...) (do-slide (λ () (list stuff ...))))
+(define (do-slide thunk)
   (let ((toplevel? (section-toplevel?)))
     (parameterize ([section-toplevel? #f])
-       (let ((section (section stuff ...)))
+       (let ((section (section (thunk))))
          (if toplevel?
              (register-section section)
              section)))))
+(define group-title (make-parameter #f))
+(define-syntax-rule (slide-group title stuff ...)
+  (do-slide-group title (λ () (list stuff ...))))
+(define (do-slide-group title thunk)
+  (slide
+   (slide @(h1 title))
+   (parameterize ([group-title title])
+     (thunk))))
+(define-syntax-rule (gslide stuff ...)
+  (slide
+    (when (group-title)
+      (p align: 'right valign: 'top (font size: 4 (b (group-title)))))
+    stuff ...))
+
 (define (reveal-url . text)
   ;; (cons "http://cdn.jsdelivr.net/reveal.js/3.0.0/" text)
   (cons "resources/reveal/" text))
@@ -68,6 +87,7 @@ This document is available under the bugroff license.
   (img src: (pic-url name url) alt: name height: (if (empty? size) "75%" size)))
 
 (define *white* "#ffffff")
+(define *gray* "#7f7f7f")
 (define *blue* "#0000ff")
 (define *light-blue* "#b4b4ff")
 (define *red* "#ff0000")
@@ -99,19 +119,22 @@ This document is available under the bugroff license.
 
 (define (bg-slide text fgcolor bgcolor)
   (λ x
-    (slide
+    (gslide
      data-background: bgcolor
      (spacing x)
      (div align: 'right valign: 'bottom (color #:fg fgcolor text)))))
 
-(define (x-slide . x) (slide (spacing x)))
+(define-syntax-rule (x-slide x ...) (gslide (spacing (list x ...))))
 
-(define th-width "4%")
-(define td-width "48%")
-(define table-width "114%")
+;;(define th-width "4%")
+;;(define td-width "48%")
+;;(define table-width "114%")
+(define th-width "8%")
+(define td-width "46%")
+(define table-width "104%")
 
 (define (th* name)
-  (if name (th width: th-width (font size: "5" (color name #:fg *white*))) (td)))
+  (if name (th width: th-width (font size: "6" (color name #:fg *white*))) (td)))
 
 (define (row name left right #:left-bg (left-bg #f) #:right-bg (right-bg #f))
   (tr
@@ -127,7 +150,7 @@ This document is available under the bugroff license.
        (td width: td-width))))
 
 (define (krad-slide #:question question #:issue issue #:story story #:solution solution)
-  (slide
+  (gslide
    (table
     align: 'right width: table-width
     (map (λ (name text) (row name text #f #:left-bg *light-green*))
@@ -139,7 +162,7 @@ This document is available under the bugroff license.
                     #:sad-story sad-story #:sad-solution sad-solution
                     #:rad-issue rad-issue #:rad-question rad-question
                     #:rad-story rad-story #:rad-solution rad-solution)
-  (slide
+  (gslide
    (table
     align: 'right width: table-width
     (map (λ (name sad rad) (row name sad rad #:left-bg *light-red* #:right-bg *light-blue*))
@@ -165,7 +188,7 @@ This document is available under the bugroff license.
      (krad-slide #:question krad-question #:issue krad-issue #:story krad-story #:solution krad-solution))))
 
 (slide
- @h1{Better Stories, Better Languages}
+ @h1{Better Stories, Better Software}
  @CB{What Would Alyssa P. Hacker Do?}
  ~
  ~
@@ -177,8 +200,8 @@ This document is available under the bugroff license.
  @url{http://github.com/fare/better-stories}
 )
 
-(slide ;; Intro: Stories
-(x-slide
+(slide-group "Introduction: Stories"
+(gslide
  @h1{Stories}
  (table
   (tr
@@ -208,7 +231,7 @@ because we like to explain our world in term of stories.
 And not just the world, but our role in the world.
 })
 
-(slide
+(gslide
   @h1{Universal Stories}
   (let ((theme-pic
          '(("Boy Meets Girl" "lovelace-babbage.jpg" "https://images-na.ssl-images-amazon.com/images/I/91FCUHSgEAL.jpg" "10%")
@@ -224,7 +247,7 @@ There are many common stories so general that they can apply in any kind human s
 I am not going to discuss those stories today.
 })
 
-@slide{
+@gslide{
  @h1{Programming Stories}
     @image["Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "50%"]
  @p{e.g. How does Software come into existence?}
@@ -248,7 +271,7 @@ I want to show you that we do tell stories, even when we're not aware of them.
 I want to show you that some stories lead to better outcomes than others.
 }))
 
-(slide ;; First Stories
+(slide-group "Pairs of Stories"
 (x-slide
  @h1{Pairs of Stories}
  @L{Take a @color[#:bg *light-red*]{sad so-o-ong},
@@ -259,17 +282,19 @@ I want to show you that some stories lead to better outcomes than others.
 (xad-slide
  #:sad-question "How to fund programs?"
  #:sad-issue "Software costly to produce"
- #:sad-story '("software scarce: own&sell it" "vendors & customers") ;; (static)
+ #:sad-story '("useful software is scarce" ;; own and sell it
+               "vendors & customers") ;; (static)
  #:sad-solution '("Proprietary Software" "Closed binaries") ;; unmaintainable by anyone but the vendor, if interested
  #:rad-question "How to fund programming?"
  #:rad-issue "Starved coders don't code"
- #:rad-story '("labor is scarce: own&sell it" "contributors & users") ;; (dynamic)
+ #:rad-story '("skilled labor is scarce" ;; own and sell *that*
+               "contributors & users") ;; (dynamic)
  #:rad-solution '("Free Software" "Open Source")) ;; shaped into maintainability by shared maintenance
 
-(slide
+(gslide
  @h1{@q{I disagree!}}
  ~
- @L{It's OK to be wrong (for you, for me)}
+ @L{It's OK to be wrong} ;; (for you, for me) -- at least one of us is wrong.
  @L{@em{Maybe} one story isn't @em{always} better}
  ~
  @L{Can we agree that stories @em{matter} though?}
@@ -277,8 +302,7 @@ I want to show you that some stories lead to better outcomes than others.
  @comment{
  }))
 
-(slide
-(slide @h1{Simple Programming Stories})
+(slide-group "Simple Programming Stories"
 (xad-slide
  #:sad-question "Decompose programs?" ; (how to...)
  #:sad-issue "Software too large for one brainful"
@@ -286,7 +310,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:sad-solution '("Flowcharts, UML" "Top-down management")
  #:rad-question "Decompose programming?"
  #:rad-issue "Cooperation needed by many brains"
- #:rad-story '("Propagate partial info along" "network of people, projects")
+ #:rad-story '("Propagate partial info along" "human&machine network")
  #:rad-solution '("SW distributions, forums" "Distributed version control"))
 
 (xad-slide
@@ -299,10 +323,44 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-issue '("Improving ourselves is hard") ;; learn from our and their successes and failures
  #:rad-story '("Learn from experience" ;; other people's, or your own; experience as an output, rather than expertise as an input
                "Cultivate good incentives") ;; information isn't the limiting factor
- #:rad-solution '("Communities" "Competition in open markets")))
+ #:rad-solution '("Communities" "Open competitive markets"))
 
-(slide
-(x-slide @h1{Stories about Programming Languages})
+;;(slide-group "Stories about Programming Quality"
+(xad-slide
+ ;; iterative vs interactive
+ #:sad-question "Get Programs Debugged" ; (how to...)
+ #:sad-issue "Program bugs need fixed"
+ #:sad-story '("Bugs are exceptions" "Ad-hoc tools retrofitted")
+ #:sad-solution '("Low-level debugger" "Ad-hoc debug info")
+ #:rad-question "Explore Program Semantics"
+ #:rad-issue "Semantics isn't obvious"
+ #:rad-story '("Imperfection is the default" "Exploration is normal")
+ #:rad-solution '("Compiler as reversible lens" "Virtualized Experiment"))
+
+(xad-slide
+ #:sad-question "Secure existing software?" ; (how to...)
+ #:sad-issue "Security its own expertise"
+ #:sad-story '("Security as afterthought"
+               "Independent Sec Experts")
+ #:sad-solution '("Forever patch leaks" "Low-level protection")
+ #:rad-question "Build software securely?"
+ #:rad-issue "Security as aspect of Design"
+ #:rad-story '("Sec integral to P'ing" "Programmer education")
+ #:rad-solution '("Whole-system design" "High-level capabilities"))
+
+(xad-slide
+ #:sad-question "Dealing with catastrophes?" ; (how to...)
+ #:sad-issue "Bad manip. → Data loss"
+ #:sad-story '("Exceptional catastrophes")
+ #:sad-solution (list "Confirm menus, remove bin"
+                      @list{Expensive ad hoc "Undo"}) ;; programmer-intensive add-ons
+ #:rad-question "Eliminating catastrophes?"
+ #:rad-issue "Bad manip. unexpressible"
+ #:rad-story '("Failures everyday, trivial")
+ #:rad-solution '("Monotonic storage" ;; XXX append-only
+                  "Universal infinite undo"))) ;; system-provided default
+
+(slide-group "Stories about Programming Languages"
 (xad-slide
  #:sad-question "Make device programmable" ; (how to...)
  #:sad-issue "Expose device features"
@@ -368,7 +426,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("Grammatical mixins" "Pervasive experimentation"))
 
 (xad-slide
- #:sad-question "Get a specialized language?" ; (how to...)
+ #:sad-question "Get a specialized language" ; (how to...)
  #:sad-issue "Heterogeneous activities"
  #:sad-story '("Each domain its experts" "Segregation of experts")
  #:sad-solution '("External DSLs" "Scripting languages")
@@ -377,43 +435,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-story '("One brain, many topics" "Adapt PL to domain")
  #:rad-solution '("Internal DSLs" "Contexts of universal PL")))
 
-(slide
-(x-slide @h1{Stories about Programming Quality})
-(xad-slide
- #:sad-question "Get Programs Debugged" ; (how to...)
- #:sad-issue "Program bugs need fixed"
- #:sad-story '("Bugs are exceptions" "Ad-hoc tools retrofitted")
- #:sad-solution '("Low-level debugger" "Ad-hoc debug info")
- #:rad-question "Explore Program Semantics"
- #:rad-issue "Semantics isn't obvious"
- #:rad-story '("Imperfection is the default" "Exploration is normal")
- #:rad-solution '("Compiler as reversible lens" "Experiment in Virtual World"))
-
-(xad-slide
- #:sad-question "Secure existing software?" ; (how to...)
- #:sad-issue "Security its own expertise"
- #:sad-story '("Security as afterthought"
-               "Independent Sec Experts")
- #:sad-solution '("Forever patch leaks" "Low-level protection")
- #:rad-question "Build software securely?"
- #:rad-issue "Security as aspect of Design"
- #:rad-story '("Sec integral to P'ing" "Programmer education")
- #:rad-solution '("Whole-system design" "High-level capabilities"))
-
-(xad-slide
- #:sad-question "Dealing with catastrophes?" ; (how to...)
- #:sad-issue "Bad manip. → Data loss"
- #:sad-story '("Exceptional catastrophes")
- #:sad-solution (list "Confirm menus, remove bin"
-                      @list{Expensive ad hoc "Undo"}) ;; programmer-intensive add-ons
- #:rad-question "Eliminating catastrophes?"
- #:rad-issue "Bad manip. unexpressible"
- #:rad-story '("Failures everyday, trivial")
- #:rad-solution '("Monotonic storage"
-                  "Universal infinite undo"))) ;; system-provided default
-
-(slide
-(x-slide @h1{More Programming Stories})
+(slide-group "More Programming Stories"
 (xad-slide
  #:sad-question "Document conventions" ; (how to...)
  #:sad-issue "Define module interfaces"
@@ -485,8 +507,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("Orthogonal persistence"
                   "Implicit support in PL")))
 
-(slide
-(x-slide @h1{Stories about Change})
+(slide-group "Stories about Change"
 (xad-slide
  #:sad-question "Model a changing world?" ; (how to...)
  #:sad-issue "Mutations happen"
@@ -518,8 +539,8 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-story '("" "")
  #:rad-solution '("" ""))
 
-(slide
-(slide
+(slide-group "Conclusion"
+(gslide
  @h1{The Grand Challenge}
  ~
  @L{None of these Stories is revolutionary} ;; From The Mother of All Demos...
@@ -536,9 +557,8 @@ I want to show you that some stories lead to better outcomes than others.
  @L{Better tools via better stories}
  @L{Explicit stories as great meta-tool...})
 
-(slide
+(gslide
  @h1{The Meta-Story}
- ~
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
  (table
@@ -551,24 +571,31 @@ I want to show you that some stories lead to better outcomes than others.
    (th* "Topic")
    (td
     class: 'fragment data-fragment-index: 1 bgcolor: *light-red*
-    (spacing '("About Programs" "Things Created")))
+    (spacing '("About Programs" "Things Created" "Static Product")))
    (td
     class: 'fragment data-fragment-index: 1 bgcolor: *light-blue*
-    (spacing '("About Programming" "People Creating"))))
+    (spacing '("About Programming" "People Creating" "Dynamic Process")))) ;; dynamic
   (tr
    (th* "Choice")
    (td
     class: 'fragment data-fragment-index: 2 bgcolor: *light-red*
     (spacing (list (span class: 'fragment data-fragment-index: 2 "Bind Good Early")
-                   (span class: 'fragment data-fragment-index: 3 "Impose Ignorance"))))
+                   (span class: 'fragment data-fragment-index: 3 "Impose Ignorance")
+                   (span class: 'fragment data-fragment-index: 3 "Vicious Circle"))))
    (td
     class: 'fragment data-fragment-index: 2 bgcolor: *light-blue*
     (spacing (list (span class: 'fragment data-fragment-index: 2 "Ban Bad Early")
-                   (span class: 'fragment data-fragment-index: 3 "Create Freedom"))))))
- ;; Vicious circle of sad stories / Vertuous circle of better stories
+                   (span class: 'fragment data-fragment-index: 3 "Create Freedom")
+                   (span class: 'fragment data-fragment-index: 3 "Virtuous Circle"))))))
  ;; Story imposed on you / you choose the story
  ~
- @p[class: 'fragment]{Any question?}))
+ @p[class: 'fragment]{
+   @br[]
+   @cite{Efficiency is doing things right; effectiveness is doing the right things.}
+   — Peter Drucker
+ }
+ ;; ~ @p[class: 'fragment]{Any question?}
+ ))
 
  ;; Frame of mind: "white" "white" "white" ... "what do cows drink?"
 
