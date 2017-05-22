@@ -39,11 +39,12 @@ TODO: add stories for users, for programmers ==> permeation
     (values (λ () (reverse sections))
             (λ (section) (set! sections (cons section sections))))))
 (define section-toplevel? (make-parameter #t))
-(define-syntax-rule (slide stuff ...) (do-slide (λ () (list stuff ...))))
-(define (do-slide thunk)
+(define-syntax-rule (slide (options ...) stuff ...)
+  (do-slide (list options ...) (λ () (list stuff ...))))
+(define (do-slide options thunk)
   (let ((toplevel? (section-toplevel?)))
     (parameterize ([section-toplevel? #f])
-       (let ((section (section (thunk))))
+       (let ((section (apply section (append options (thunk)))))
          (if toplevel?
              (register-section section)
              section)))))
@@ -51,15 +52,15 @@ TODO: add stories for users, for programmers ==> permeation
 (define-syntax-rule (slide-group title stuff ...)
   (do-slide-group title (λ () (list stuff ...))))
 (define (do-slide-group title thunk)
-  (slide
-   (slide @(h1 title))
+  (slide ()
+   (slide () @(h1 title))
    (parameterize ([group-title title])
      (thunk))))
-(define-syntax-rule (gslide stuff ...)
-  (slide
-    (when (group-title)
-      (p align: 'right valign: 'top (font size: 4 (b (group-title)))))
-    stuff ...))
+(define (do-group-title)
+  (when (group-title)
+    (p align: 'right valign: 'top (font size: 4 (b (group-title))))))
+(define-syntax-rule (gslide (options ...) stuff ...)
+  (slide (options ...) (do-group-title) stuff ...))
 
 (define (reveal-url . text)
   ;; (cons "http://cdn.jsdelivr.net/reveal.js/3.0.0/" text)
@@ -127,12 +128,12 @@ TODO: add stories for users, for programmers ==> permeation
 
 (define (bg-slide text fgcolor bgcolor)
   (λ x
-    (gslide
-     data-background: bgcolor
+    (gslide (data-background: bgcolor)
      (spacing x)
      (div align: 'right valign: 'bottom (color #:fg fgcolor text)))))
 
-(define-syntax-rule (x-slide x ...) (gslide (spacing (list x ...))))
+(define-syntax-rule (x-slide (options ...) x ...)
+  (gslide (options ...) (spacing (list x ...))))
 
 ;;(define th-width "4%")
 ;;(define td-width "48%")
@@ -160,7 +161,8 @@ TODO: add stories for users, for programmers ==> permeation
        (td width: td-width))))
 
 (define (krad-slide #:question question #:issue issue #:story story #:solution solution)
-  (gslide
+  (slide ()
+   (do-group-title)
    (table
     align: 'right width: table-width
     (map (λ (name text) (row name text #f #:left-bg *light-green*))
@@ -172,8 +174,16 @@ TODO: add stories for users, for programmers ==> permeation
                     #:sad-story sad-story #:sad-solution sad-solution
                     #:rad-issue rad-issue #:rad-question rad-question
                     #:rad-story rad-story #:rad-solution rad-solution
-                    #:skad? (skad? #f))
-  (gslide
+                    #:has-skad? (has-skad? #f) #:skad? (skad? #f))
+  (slide
+   (data-transition:
+    (cond
+     (skad? "fade-in slide-out")
+     (has-skad? "slide-in fade-out")
+     (else "slide"))
+    data-transition-speed:
+     (if has-skad? "fast" "normal"))
+   (do-group-title)
    (table
     align: 'right width: table-width
     (map (λ (name sad rad)
@@ -199,15 +209,38 @@ TODO: add stories for users, for programmers ==> permeation
    (srad-slide #:sad-issue sad-issue #:sad-question sad-question
                #:sad-story sad-story #:sad-solution sad-solution
                #:rad-issue rad-issue #:rad-question rad-question
-               #:rad-story rad-story #:rad-solution rad-solution)
+               #:rad-story rad-story #:rad-solution rad-solution
+               #:has-skad? #t #:skad? #f)
    (when krad-issue
      (srad-slide #:sad-issue sad-issue #:sad-question sad-question
                  #:sad-story sad-story #:sad-solution sad-solution
                  #:rad-issue krad-issue #:rad-question krad-question
                  #:rad-story krad-story #:rad-solution krad-solution
-                 #:skad? #t))))
+                 #:has-skad? #t #:skad? #t))))
 
-(slide
+#|
+(xad-slide
+ #:sad-question "Model a changing world?" ; (how to...)
+ #:sad-issue "Mutations happen"
+ #:sad-story '("Mutable Object-Oriented"
+               "Can't trust any(thing|one)")  ;; live in a world of fear
+ #:sad-solution '("Imperative programming"
+                  "Locks: transient protection")
+ #:rad-question "Model changes to world?"
+ #:rad-issue "Transformations compose"
+ #:rad-story '("Immutable Value-Oriented"
+               "Can always reason")
+ #:rad-solution '("Functional Programming" ;; Purity by default, at base-level, at meta-level, too... Unlambda!
+                  "Monads, extensible effects") ;; Problem: too much or too little
+ #:krad-question "Discuss relevant change?"
+ #:krad-issue "Record and Process Events"
+ #:krad-story (list "First-class Change-Oriented"
+                    @list{Mutable vs immutable @em{view}})
+ #:krad-solution '("Differentiate, Integrate" ;; take the benefits of FP for granted...
+                   "Switch view to/from FP"))
+|#
+
+(slide ()
  @h1{Better Stories, Better Software}
  @CB{Reframing Programs into Programming}
  ~
@@ -221,7 +254,7 @@ TODO: add stories for users, for programmers ==> permeation
 )
 
 (slide-group "Introduction: Stories"
-(gslide
+(gslide ()
  @h1{Stories}
  (table
   (tr
@@ -251,7 +284,7 @@ because we like to explain our world in term of stories.
 And not just the world, but our role in the world.
 })
 
-(gslide
+(gslide ()
   @h1{@gray{Universal Stories}} ;; XXX SKIP?
   (let ((theme-pic
          '(("Boy Meets Girl" "lovelace-babbage.jpg" "https://images-na.ssl-images-amazon.com/images/I/91FCUHSgEAL.jpg" "10%")
@@ -267,7 +300,7 @@ There are many common stories so general that they can apply in any kind human s
 I am not going to discuss those stories today.
 })
 
-(gslide
+(gslide ()
  @h1{@gray{Programming Stories}} ;; XXX SKIP?
  (table
   (let ((q-pic
@@ -286,7 +319,7 @@ I am not going to discuss those stories today.
   Today I want to discuss stories specifically about programming.
 })
 
-(gslide
+(gslide ()
  @h1{The Take Home Points}
  @L{Stories @em{matter}}
  @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
@@ -301,7 +334,7 @@ I want to show you that some stories lead to better outcomes than others.
 }))
 
 (slide-group "Pairs of Stories" ;; XXX SKIP?
-(x-slide
+(x-slide ()
  @h1{Pairs of Stories}
  @L{Take a @color[#:bg *light-red*]{sad so-o-ong},
             and make it @color[#:bg *light-blue*]{be-e-etter}}
@@ -309,7 +342,7 @@ I want to show you that some stories lead to better outcomes than others.
  )
 
 
-(gslide
+(gslide ()
  @h1{The Meta-Story}
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
@@ -354,7 +387,7 @@ I want to show you that some stories lead to better outcomes than others.
                "contributors & users") ;; (dynamic)
  #:rad-solution '("Free Software" "Open Source")) ;; shaped into maintainability by shared maintenance
 
-(gslide
+(gslide ()
  @h1{@q{I disagree!}}
  ~
  @L{It's OK to be wrong} ;; (for you, for me) -- at least one of us is wrong.
@@ -611,7 +644,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:rad-solution '("" ""))
 
 (slide-group "Conclusion"
-(gslide
+(gslide ()
  @h1{The Grand Challenge}
  ~
  @L{None of these Stories is revolutionary} ;; From The Mother of All Demos...
@@ -626,14 +659,14 @@ I want to show you that some stories lead to better outcomes than others.
   @C{We can do so much better!} ;; Opportunity!
   @L{}))
 
-(x-slide
+(x-slide ()
  @h1{The Take Home Points (redux)}
  @L{Stories @em{matter}}
  @L{Software tools imply a story, and @em{vice versa}} @comment{like a Fourier Transform}
  @L{Better tools via better stories}
  @L{Explicit stories as great meta-tool...})
 
-(gslide
+(gslide ()
  @h1{The Meta-Story}
  ;; programmers as means to acquire the things,
  ;; vs things as byproduct of programmers expressing ideas
