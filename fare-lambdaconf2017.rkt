@@ -222,8 +222,7 @@ TODO: add stories for users, for programmers ==> permeation
  ~
  ~
  @p{LambdaConf 2017, 2017-05-27}
- @url{http://github.com/fare/better-stories}
-)
+ @url{http://github.com/fare/better-stories})
 
 (slide-group "Introduction: Stories"
 (gslide ()
@@ -409,7 +408,7 @@ I want to show you that some stories lead to better outcomes than others.
  #:sad-story '("Exceptional catastrophes"
                "Blame end-users")
  #:sad-solution (t "Confirm menus, remove bin"
-                   @t{Expensive ad hoc "Undo"}) ;; programmer-intensive add-ons
+                   @t{Expensive limited "Undo"}) ;; programmer-intensive add-ons
  #:rad-question "Eliminate catastrophes?"
  #:rad-issue "Bad manip. unexpressible"
  #:rad-story '("Failures everyday normal"
