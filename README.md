@@ -1,7 +1,7 @@
 Better Stories, Better Languages (What Would Alyssa P. Hacker Do?)
 ==================================================================
 
-This talk will be presented at LambdaConf 2017.
+This talk was presented at LambdaConf 2017.
 It is based on my presentation of the same name,
 initially a lightning talk at ILC'2009,
 then grown into a presentation at Bay Area Lispers 2009,
