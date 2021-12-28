@@ -282,8 +282,8 @@ I am not going to discuss those stories today.
                 ;; XXXX Picture: "I am a God!"
                 "Creation_Machine.jpg" "https://cdn.searchenginejournal.com/wp-content/uploads/2015/07/shutterstock_28130593-1.jpg" "50%")
           (list @p{Which user needs does it serve? @br[]
-                   @small{See story-based design - @br[]
-                              and @em{understand} it, or beware the pitfalls}}
+                   @small{Story-based design —
+                          @em{understand} it, beware the pitfalls}}
                 "puppy_coding.png"
                 "https://cdn-images-1.medium.com/max/600/1*snTXFElFuQLSFDnvZKJ6IA.png" "82%"))))
     (table
